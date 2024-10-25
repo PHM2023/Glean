@@ -1,0 +1,1248 @@
+# Example plan for QP_GKE
+
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.memory_based_large_nodegroup.aws_eks_node_group.node_group will be created
+  + resource "aws_eks_node_group" "node_group" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = (known after apply)
+      + cluster_name           = "glean-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = (known after apply)
+      + labels                 = {
+          + "use" = "memory-based-workload"
+        }
+      + node_group_name        = "memory-based-large-nodegroup"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = "arn:aws:iam::761376532301:role/eksWorkerNode"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-038eced06a2a4af69",
+        ]
+      + tags_all               = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = (known after apply)
+        }
+
+      + scaling_config {
+          + desired_size = 0
+          + max_size     = 50
+          + min_size     = 0
+        }
+
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "glean-app"
+          + value  = "True"
+        }
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "memory-based-workload"
+          + value  = "True"
+        }
+    }
+
+  # module.memory_based_large_nodegroup.aws_launch_template.node_group_launch_template will be created
+  + resource "aws_launch_template" "node_group_launch_template" {
+      + arn             = (known after apply)
+      + default_version = (known after apply)
+      + id              = (known after apply)
+      + instance_type   = "r6i.2xlarge"
+      + latest_version  = (known after apply)
+      + name            = "memory-based-large-nodegroup-launch-template"
+      + name_prefix     = (known after apply)
+      + tags_all        = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+
+      + block_device_mappings {
+          + device_name = "/dev/xvda"
+
+          + ebs {
+              + delete_on_termination = "true"
+              + encrypted             = "true"
+              + iops                  = (known after apply)
+              + throughput            = (known after apply)
+              + volume_size           = 100
+              + volume_type           = "gp3"
+            }
+        }
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = (known after apply)
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Name"     = "memory-based-large-nodegroup-instance"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "imds"     = "secure"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Name"     = "memory-based-large-nodegroup-volume"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+    }
+
+  # module.memory_based_medium_nodegroup.aws_eks_node_group.node_group will be created
+  + resource "aws_eks_node_group" "node_group" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = (known after apply)
+      + cluster_name           = "glean-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = (known after apply)
+      + labels                 = {
+          + "use" = "memory-based-workload"
+        }
+      + node_group_name        = "memory-based-medium-nodegroup"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = "arn:aws:iam::761376532301:role/eksWorkerNode"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-038eced06a2a4af69",
+        ]
+      + tags_all               = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = (known after apply)
+        }
+
+      + scaling_config {
+          + desired_size = 0
+          + max_size     = 50
+          + min_size     = 0
+        }
+
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "glean-app"
+          + value  = "True"
+        }
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "memory-based-workload"
+          + value  = "True"
+        }
+    }
+
+  # module.memory_based_medium_nodegroup.aws_launch_template.node_group_launch_template will be created
+  + resource "aws_launch_template" "node_group_launch_template" {
+      + arn             = (known after apply)
+      + default_version = (known after apply)
+      + id              = (known after apply)
+      + instance_type   = "r6i.xlarge"
+      + latest_version  = (known after apply)
+      + name            = "memory-based-medium-nodegroup-launch-template"
+      + name_prefix     = (known after apply)
+      + tags_all        = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+
+      + block_device_mappings {
+          + device_name = "/dev/xvda"
+
+          + ebs {
+              + delete_on_termination = "true"
+              + encrypted             = "true"
+              + iops                  = (known after apply)
+              + throughput            = (known after apply)
+              + volume_size           = 100
+              + volume_type           = "gp3"
+            }
+        }
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = (known after apply)
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Name"     = "memory-based-medium-nodegroup-instance"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "imds"     = "secure"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Name"     = "memory-based-medium-nodegroup-volume"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+    }
+
+  # module.memory_based_small_nodegroup.aws_eks_node_group.node_group will be created
+  + resource "aws_eks_node_group" "node_group" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = (known after apply)
+      + cluster_name           = "glean-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = (known after apply)
+      + labels                 = {
+          + "use" = "memory-based-workload"
+        }
+      + node_group_name        = "memory-based-small-nodegroup"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = "arn:aws:iam::761376532301:role/eksWorkerNode"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-038eced06a2a4af69",
+        ]
+      + tags_all               = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = (known after apply)
+        }
+
+      + scaling_config {
+          + desired_size = 0
+          + max_size     = 50
+          + min_size     = 0
+        }
+
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "glean-app"
+          + value  = "True"
+        }
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "memory-based-workload"
+          + value  = "True"
+        }
+    }
+
+  # module.memory_based_small_nodegroup.aws_launch_template.node_group_launch_template will be created
+  + resource "aws_launch_template" "node_group_launch_template" {
+      + arn             = (known after apply)
+      + default_version = (known after apply)
+      + id              = (known after apply)
+      + instance_type   = "r6i.large"
+      + latest_version  = (known after apply)
+      + name            = "memory-based-small-nodegroup-launch-template"
+      + name_prefix     = (known after apply)
+      + tags_all        = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+
+      + block_device_mappings {
+          + device_name = "/dev/xvda"
+
+          + ebs {
+              + delete_on_termination = "true"
+              + encrypted             = "true"
+              + iops                  = (known after apply)
+              + throughput            = (known after apply)
+              + volume_size           = 100
+              + volume_type           = "gp3"
+            }
+        }
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = (known after apply)
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Name"     = "memory-based-small-nodegroup-instance"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "imds"     = "secure"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Name"     = "memory-based-small-nodegroup-volume"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+    }
+
+  # module.memory_based_xlarge_nodegroup.aws_eks_node_group.node_group will be created
+  + resource "aws_eks_node_group" "node_group" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = (known after apply)
+      + cluster_name           = "glean-cluster"
+      + disk_size              = (known after apply)
+      + force_update_version   = true
+      + id                     = (known after apply)
+      + instance_types         = (known after apply)
+      + labels                 = {
+          + "use" = "memory-based-workload"
+        }
+      + node_group_name        = "memory-based-xlarge-nodegroup"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = "arn:aws:iam::761376532301:role/eksWorkerNode"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = [
+          + "subnet-038eced06a2a4af69",
+        ]
+      + tags_all               = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+      + version                = (known after apply)
+
+      + launch_template {
+          + id      = (known after apply)
+          + name    = (known after apply)
+          + version = (known after apply)
+        }
+
+      + scaling_config {
+          + desired_size = 0
+          + max_size     = 50
+          + min_size     = 0
+        }
+
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "glean-app"
+          + value  = "True"
+        }
+      + taint {
+          + effect = "NO_SCHEDULE"
+          + key    = "memory-based-workload"
+          + value  = "True"
+        }
+    }
+
+  # module.memory_based_xlarge_nodegroup.aws_launch_template.node_group_launch_template will be created
+  + resource "aws_launch_template" "node_group_launch_template" {
+      + arn             = (known after apply)
+      + default_version = (known after apply)
+      + id              = (known after apply)
+      + instance_type   = "r6i.4xlarge"
+      + latest_version  = (known after apply)
+      + name            = "memory-based-xlarge-nodegroup-launch-template"
+      + name_prefix     = (known after apply)
+      + tags_all        = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+
+      + block_device_mappings {
+          + device_name = "/dev/xvda"
+
+          + ebs {
+              + delete_on_termination = "true"
+              + encrypted             = "true"
+              + iops                  = (known after apply)
+              + throughput            = (known after apply)
+              + volume_size           = 100
+              + volume_type           = "gp3"
+            }
+        }
+
+      + metadata_options {
+          + http_endpoint               = "enabled"
+          + http_protocol_ipv6          = (known after apply)
+          + http_put_response_hop_limit = 2
+          + http_tokens                 = "required"
+          + instance_metadata_tags      = (known after apply)
+        }
+
+      + tag_specifications {
+          + resource_type = "instance"
+          + tags          = {
+              + "Name"     = "memory-based-xlarge-nodegroup-instance"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "imds"     = "secure"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+      + tag_specifications {
+          + resource_type = "volume"
+          + tags          = {
+              + "Name"     = "memory-based-xlarge-nodegroup-volume"
+              + "final1"   = "venkat3"
+              + "foo"      = "bar"
+              + "instance" = "aws-glean-dev-2"
+              + "testing"  = "venkat"
+              + "testing1" = "venkat2"
+              + "testing2" = "connor"
+            }
+        }
+    }
+
+  # module.k8s.module.qp_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  # (imported from "default/qp-deployment")
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/qp-deployment"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 937
+            labels           = {}
+            name             = "qp-deployment"
+            namespace        = "default"
+            resource_version = "324930402"
+            uid              = "75e01ac6-9df8-4a8d-a8db-515c23aa5b91"
+        }
+
+      ~ spec {
+            min_ready_seconds         = 0
+            paused                    = false
+            progress_deadline_seconds = 1200
+            replicas                  = "2"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app" = "qp"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_surge       = "100%"
+                    max_unavailable = "0"
+                }
+            }
+
+          ~ template {
+              ~ metadata {
+                  ~ annotations      = {
+                      - "kubectl.kubernetes.io/restartedAt" = "2024-07-19T13:20:47Z" -> null
+                    }
+                    generate_name    = null
+                    generation       = 0
+                  ~ labels           = {
+                        "app"       = "qp"
+                      + "glean-app" = "True"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                  ~ automount_service_account_token  = false -> true
+                    dns_policy                       = "ClusterFirst"
+                  ~ enable_service_links             = false -> true
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                  ~ node_selector                    = {
+                      - "glean.com/node-pool-selector" = "nodegroup-r6a_large" -> null
+                    }
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "query-parser"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 60
+
+                  + affinity {
+                      + node_affinity {
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 4
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-small-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 3
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-medium-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 2
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-large-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 1
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-xlarge-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + required_during_scheduling_ignored_during_execution {
+                              + node_selector_term {
+                                  + match_expressions {
+                                      + key      = "use"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-workload",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                  ~ container {
+                        args                       = []
+                        command                    = []
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/qp@sha256:92ba8d07ee472d67047ebac1b8b50e96fb04a518992bb92dff9ed1b25f549268" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/qp@sha256:c16bd94dbef0ec052824798dc408f27f0dd22e471f974849390e140a7610168e"
+                        image_pull_policy          = "Always"
+                        name                       = "qp"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "AWS_ACCOUNT_ID"
+                          ~ value = "aws-connector-glean-dev-2" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "AWS_DEFAULT_REGION"
+                          ~ value = "PRODUCTION" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "AWS_REGION"
+                          ~ value = "EKS" -> "us-west-1"
+                        }
+                        env {
+                            name  = "CLOUD_PLATFORM"
+                            value = "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "ENVIRONMENT"
+                          ~ value = "761376532301" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "us-west-1" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "GOOGLE_CLOUD_PROJECT"
+                          ~ value = "default" -> "aws-connector-glean-dev-2"
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "EKS_NODE_NAME"
+                          - value = "qp_eks" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "EKS_POD_NAME"
+                          - value = "qp" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "ROLLOUT_ID" -> "EKS_POD_NAMESPACE"
+                          - value = "2024-07-17 10:34:51.361314-07:00" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "INSTANCE_ID"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "spec.nodeName" -> "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_CONTAINER_NAME"
+                          + value = "qp"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "K8S_POD_NAME" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "qp"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "PROFILER_SERVICE_NAME"
+                          + value = "qp"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.namespace" -> null
+                                }
+                            }
+                        }
+                      - env {
+                          - name  = "INSTANCE_ID" -> null
+                            value = null
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+
+                        lifecycle {
+                            pre_stop {
+                                exec {
+                                    command = [
+                                        "sleep",
+                                        "10",
+                                    ]
+                                }
+                            }
+                        }
+
+                      ~ liveness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/liveness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 8080
+                            host_ip        = null
+                            host_port      = 0
+                            name           = null
+                            protocol       = "TCP"
+                        }
+
+                      ~ readiness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "cpu"    = "1200m"
+                                "memory" = "7Gi"
+                            }
+                            requests = {
+                                "cpu"    = "600m"
+                                "memory" = "5Gi"
+                            }
+                        }
+
+                        startup_probe {
+                            failure_threshold     = 60
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 9
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/usr/local/lib"
+                            mount_propagation = "None"
+                            name              = "file-volume"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "glean-app"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "True"
+                    }
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "memory-based-workload"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+
+                    volume {
+                        name = "file-volume"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "25m"
+          + update = "25m"
+        }
+    }
+
+  # module.k8s.module.qp_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be updated in-place
+  # (imported from "default/qp-hpa")
+  ~ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+        id = "default/qp-hpa"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "qp-hpa"
+            namespace        = "default"
+            resource_version = "325116819"
+            uid              = "aae8227e-109c-4f4d-976b-5ad6a21a6e70"
+        }
+
+      ~ spec {
+            max_replicas                      = 20
+            min_replicas                      = 2
+            target_cpu_utilization_percentage = 0
+
+          + behavior {
+              + scale_down {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 900
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                }
+              + scale_up {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 300
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Pods"
+                      + value          = 5
+                    }
+                }
+            }
+
+            metric {
+                type = "Resource"
+
+                resource {
+                    name = "cpu"
+
+                    target {
+                        average_utilization = 25
+                        average_value       = null
+                        type                = "Utilization"
+                        value               = null
+                    }
+                }
+            }
+
+            scale_target_ref {
+                api_version = "apps/v1"
+                kind        = "Deployment"
+                name        = "qp-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.qp_deployment.kubernetes_pod_disruption_budget_v1.pdb will be imported
+    resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+        id = "default/qp-pdb"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 1
+            labels           = {}
+            name             = "qp-pdb"
+            namespace        = "default"
+            resource_version = "324931328"
+            uid              = "729dd7d2-21e4-486a-a67a-046d9a557f5e"
+        }
+
+        spec {
+            max_unavailable = null
+            min_available   = "2"
+
+            selector {
+                match_labels = {
+                    "app" = "qp"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.qp_deployment.kubernetes_service_v1.service will be updated in-place
+  # (imported from "default/qp-service")
+  ~ resource "kubernetes_service_v1" "service" {
+        id                     = "default/qp-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = [
+                            {
+                                hostname = "k8s-default-qpservic-b72ac91e89-31668dd571875a9d.elb.us-west-1.amazonaws.com"
+                                ip       = null
+                            },
+                        ]
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = true
+
+      ~ metadata {
+          ~ annotations      = {
+              + "alb.ingress.kubernetes.io/name"                                        = "qp-internal-lb"
+              + "alb.ingress.kubernetes.io/scheme"                                      = "internal"
+              + "alb.ingress.kubernetes.io/target-type"                                 = "ip"
+              + "kubernetes.io/ingress.class"                                           = "alb"
+              ~ "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags" = "instance=aws-glean-dev-2,foo=bar,testing=venkat,testing2=connor,testing1=venkat2,final1=venkat3" -> "final1=venkat3,foo=bar,instance=aws-glean-dev-2,testing=venkat,testing1=venkat2,testing2=connor"
+              + "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type"          = "ip"
+              + "service.beta.kubernetes.io/aws-load-balancer-scheme"                   = "internal"
+            }
+            generate_name    = null
+            generation       = 0
+            labels           = {
+                "app" = "qp"
+            }
+            name             = "qp-service"
+            namespace        = "default"
+            resource_version = "297385025"
+            uid              = "57ce88eb-d25c-4e75-b185-273c0909c0b5"
+        }
+
+        spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.240.35"
+            cluster_ips                       = [
+                "172.20.240.35",
+            ]
+            external_ips                      = []
+            external_name                     = null
+            external_traffic_policy           = "Cluster"
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = "service.k8s.aws/nlb"
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "qp"
+            }
+            session_affinity                  = "None"
+            type                              = "LoadBalancer"
+
+            port {
+                app_protocol = null
+                name         = null
+                node_port    = 32354
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "8080"
+            }
+        }
+    }
+
+  # module.k8s.module.qp_lb_config_update.kubernetes_job.config_update_job will be created
+  + resource "kubernetes_job" "config_update_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "qp-lb-config-update"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit   = 2
+          + completion_mode = (known after apply)
+          + completions     = 1
+          + parallelism     = 1
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--path=config_update",
+                          + "--ipjc_channel_path=",
+                          + "--ipjc_request_body=''",
+                          + "--config_key_value=eks.qp.internalLbBaseUrl=http://k8s-default-qpservic-b72ac91e89-31668dd571875a9d.elb.us-west-1.amazonaws.com",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/config_handler@sha256:b530cb6c69f66375b0c038c3aee9d747dbb113ec4ead39ea5218372109d39943"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+Plan: 4 to import, 9 to add, 3 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

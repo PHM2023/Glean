@@ -1,0 +1,1519 @@
+# Shows an example plan from aws-glean-dev-2 when running GOOGLE_MANAGED_PROMETHEUS for the firs time in full terraform
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.k8s.module.gmp.kubernetes_config_map_v1.set_google_credentials_in_aws will be imported
+    resource "kubernetes_config_map_v1" "set_google_credentials_in_aws" {
+        binary_data = {}
+        data        = {
+            "set-google-credentials-in-aws.sh" = <<-EOT
+                #!/bin/bash
+                set -e
+
+                # We still need to set the google credentials so we can export logs, traces, and metrics to a GCP project for our
+                # simplified monitoring solution: https://docs.google.com/document/d/1_Fx5Ki57H-epEKSH07vqL22I7UnADTWk2XhKXrTncoo/edit#heading=h.r2gf20h7lfuc
+                TARGET_FILE_PATH='/tmp/stackdriver-exporter-key.json'
+                # Usage: ./set-google-credentials-in-aws.sh --google_credentials_in_aws_output_path=/tmp/stackdriver-exporter-key.json
+                # If --google_credentials_in_aws_output_path is not provided, the default value above will be used
+                for arg in "$@"
+                do
+                  case $arg in
+                    --google_credentials_in_aws_output_path=*)
+                    TARGET_FILE_PATH="${arg#*=}"
+                    shift
+                    ;;
+                    *)
+                    ;;
+                  esac
+                done
+
+                export GOOGLE_APPLICATION_CREDENTIALS=$TARGET_FILE_PATH
+
+                DYNAMIC_CONFIG=/tmp/dynamic.ini
+
+                echo "Setting up google credentials with target file path: $TARGET_FILE_PATH"
+                # First, download the dynamic config to see what the gcp project id and number are
+                AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+                echo "Using AWS_ACCOUNT_ID: $AWS_ACCOUNT_ID"
+                aws s3 cp "s3://config-${AWS_ACCOUNT_ID}/dynamic.ini" $DYNAMIC_CONFIG || NO_CONFIG=true
+                if [[ $NO_CONFIG ]]; then
+                  echo "No dynamic config object found - skipping google credentials setup"
+                  return
+                fi
+
+                # Set the gcp project explicitly so sdk's work properly
+                export GOOGLE_CLOUD_PROJECT=$(sed -n 's/gcpConnectorProject \= \(\S*\)/\1/p' $DYNAMIC_CONFIG)
+                GOOGLE_PROJECT_NUMBER=$(sed -n 's/gcpConnectorProjectNumber \= \(\S*\)/\1/p' $DYNAMIC_CONFIG)
+
+                if [[ -z $GOOGLE_CLOUD_PROJECT || -z $GOOGLE_PROJECT_NUMBER ]]; then
+                  echo "No aws.gcpConnectorProject or aws.gcpConnectorProjectNumber configs set - skipping google credentials setup"
+                  return
+                fi
+
+                # Note that the following contents contain no sensitive data. It is just a hint to the gcp sdk's on how to fetch the
+                # credentials using ec2 instance metadata.
+                # TODO: this doesn't work on non-ec2 environments like code build
+                cat > $GOOGLE_APPLICATION_CREDENTIALS <<- EOF
+                {
+                  "type": "external_account",
+                  "project_id": "${GOOGLE_CLOUD_PROJECT}",
+                  "audience": "//iam.googleapis.com/projects/${GOOGLE_PROJECT_NUMBER}/locations/global/workloadIdentityPools/aws-access-pool/providers/aws-provider",
+                  "subject_token_type": "urn:ietf:params:aws:token-type:aws4_request",
+                  "service_account_impersonation_url": "https://iamcredentials.googleapis.com/v1/projects/-/serviceAccounts/stackdriver-exporter@${GOOGLE_CLOUD_PROJECT}.iam.gserviceaccount.com:generateAccessToken",
+                  "token_url": "https://sts.googleapis.com/v1/token",
+                  "credential_source": {
+                    "environment_id": "aws1",
+                    "region_url": "http://169.254.169.254/latest/meta-data/placement/availability-zone",
+                    "url": "http://169.254.169.254/latest/meta-data/iam/security-credentials",
+                    "regional_cred_verification_url": "https://sts.{region}.amazonaws.com?Action=GetCallerIdentity&Version=2011-06-15",
+                    "imdsv2_session_token_url": "http://169.254.169.254/latest/api/token"
+                  }
+                }
+                EOF
+
+                echo "GOOGLE CREDENTIALS CONTENTS"
+                echo "===="
+                cat $GOOGLE_APPLICATION_CREDENTIALS
+                echo "===="
+            EOT
+        }
+        id          = "gmp-system/set-google-credentials-in-aws"
+        immutable   = false
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "set-google-credentials-in-aws"
+            namespace        = "gmp-system"
+            resource_version = "276094061"
+            uid              = "a6497447-0ac7-4d48-9d89-339cdef0bf30"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_daemon_set_v1.gmp_collector will be updated in-place
+  # (imported from "gmp-system/collector")
+  ~ resource "kubernetes_daemon_set_v1" "gmp_collector" {
+        id               = "gmp-system/collector"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 25
+            labels           = {}
+            name             = "collector"
+            namespace        = "gmp-system"
+            resource_version = "322869395"
+            uid              = "e733e0d4-1b8d-4ab2-93af-f1ab3955b1b9"
+        }
+
+        spec {
+            min_ready_seconds      = 0
+            revision_history_limit = 10
+
+            selector {
+                match_labels = {
+                    "app.kubernetes.io/name" = "collector"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_unavailable = "1"
+                }
+            }
+
+            template {
+                metadata {
+                    annotations      = {
+                        "cluster-autoscaler.kubernetes.io/safe-to-evict" = "true"
+                        "components.gke.io/component-name"               = "managed_prometheus"
+                    }
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "app"                       = "managed-prometheus-collector"
+                        "app.kubernetes.io/name"    = "collector"
+                        "app.kubernetes.io/version" = "0.8.2"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+                spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = true
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {}
+                    priority_class_name              = "gmp-critical"
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "gmp-collector"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                    affinity {
+                        node_affinity {
+                            required_during_scheduling_ignored_during_execution {
+                                node_selector_term {
+                                    match_expressions {
+                                        key      = "kubernetes.io/arch"
+                                        operator = "In"
+                                        values   = [
+                                            "amd64",
+                                            "arm64",
+                                        ]
+                                    }
+                                    match_expressions {
+                                        key      = "kubernetes.io/os"
+                                        operator = "In"
+                                        values   = [
+                                            "linux",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    container {
+                        args                       = [
+                            "--config-file=/prometheus/config/config.yaml",
+                            "--config-file-output=/prometheus/config_out/config.yaml",
+                            "--reload-url=http://localhost:19090/-/reload",
+                            "--ready-url=http://localhost:19090/-/ready",
+                            "--listen-address=:19091",
+                        ]
+                        command                    = []
+                        image                      = "gke.gcr.io/prometheus-engine/config-reloader:v0.8.1-gke.6"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "config-reloader"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        env {
+                            name  = "NODE_NAME"
+                            value = null
+
+                            value_from {
+                                field_ref {
+                                    api_version = "v1"
+                                    field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+
+                        port {
+                            container_port = 19091
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "cfg-rel-metrics"
+                            protocol       = "TCP"
+                        }
+
+                        resources {
+                            limits   = {
+                                "memory" = "32M"
+                            }
+                            requests = {
+                                "cpu"    = "1m"
+                                "memory" = "4M"
+                            }
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/config"
+                            mount_propagation = "None"
+                            name              = "config"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/stackdriver-exporter-key"
+                            mount_propagation = "None"
+                            name              = "gmp-stackdriver-exporter-key"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+                    container {
+                        args                       = [
+                            "--config.file=/prometheus/config_out/config.yaml",
+                            "--enable-feature=exemplar-storage",
+                            "--storage.tsdb.path=/prometheus/data",
+                            "--storage.tsdb.no-lockfile",
+                            "--storage.tsdb.retention.time=30m",
+                            "--storage.tsdb.wal-compression",
+                            "--storage.tsdb.min-block-duration=10m",
+                            "--storage.tsdb.max-block-duration=10m",
+                            "--web.listen-address=:19090",
+                            "--web.enable-lifecycle",
+                            "--web.route-prefix=/",
+                            "--export.user-agent-mode=kubectl",
+                            "--log.format=json",
+                        ]
+                        command                    = []
+                        image                      = "gke.gcr.io/prometheus-engine/prometheus:v2.41.0-gmp.7-gke.0"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "prometheus"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        env {
+                            name  = "GOGC"
+                            value = "25"
+                        }
+                        env {
+                            name  = "GOOGLE_APPLICATION_CREDENTIALS"
+                            value = "/etc/stackdriver-exporter-key/stackdriver-exporter-key.json"
+                        }
+                        env {
+                            name  = "EXTRA_ARGS"
+                            value = "--export.label.project-id=\"aws-connector-glean-dev-2\" --export.label.location=\"us-central1-a\" --export.label.cluster=\"glean-cluster\""
+                        }
+
+                        liveness_probe {
+                            failure_threshold     = 3
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 1
+
+                            http_get {
+                                host   = null
+                                path   = "/-/healthy"
+                                port   = "19090"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 19090
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "prom-metrics"
+                            protocol       = "TCP"
+                        }
+
+                        readiness_probe {
+                            failure_threshold     = 3
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 1
+
+                            http_get {
+                                host   = null
+                                path   = "/-/ready"
+                                port   = "19090"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "memory" = "2G"
+                            }
+                            requests = {
+                                "cpu"    = "8m"
+                                "memory" = "32M"
+                            }
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/data"
+                            mount_propagation = "None"
+                            name              = "storage"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/secrets"
+                            mount_propagation = "None"
+                            name              = "collection-secret"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/stackdriver-exporter-key"
+                            mount_propagation = "None"
+                            name              = "gmp-stackdriver-exporter-key"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                    init_container {
+                        args                       = []
+                        command                    = [
+                            "/bin/bash",
+                            "-c",
+                            "touch /prometheus/config_out/config.yaml",
+                        ]
+                        image                      = "gke.gcr.io/gke-distroless/bash:20220419"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "config-init"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {}
+                            requests = {}
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+                    init_container {
+                        args                       = []
+                        command                    = [
+                            "/bin/bash",
+                            "-c",
+                            "mkdir -p /tmp/glean && cp /var/lib/glean/set-google-credentials-in-aws.sh /tmp/glean/set-google-credentials-in-aws.sh && chmod +x /tmp/glean/set-google-credentials-in-aws.sh && /tmp/glean/set-google-credentials-in-aws.sh --google_credentials_in_aws_output_path=/etc/stackdriver-exporter-key/stackdriver-exporter-key.json",
+                        ]
+                        image                      = "amazon/aws-cli:2.1.34"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "glean-set-google-credentials-in-aws"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {}
+                            requests = {}
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = true
+                            privileged                 = true
+                            read_only_root_filesystem  = false
+                            run_as_group               = null
+                            run_as_non_root            = false
+                            run_as_user                = "0"
+                        }
+
+                        volume_mount {
+                            mount_path        = "/var/lib/glean"
+                            mount_propagation = "None"
+                            name              = "set-google-credentials-in-aws"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/stackdriver-exporter-key"
+                            mount_propagation = "None"
+                            name              = "gmp-stackdriver-exporter-key"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoExecute"
+                        key                = null
+                        operator           = "Exists"
+                        toleration_seconds = null
+                        value              = null
+                    }
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = null
+                        operator           = "Exists"
+                        toleration_seconds = null
+                        value              = null
+                    }
+
+                    volume {
+                        name = "storage"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                    volume {
+                        name = "config"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "collector"
+                            optional     = false
+                        }
+                    }
+                    volume {
+                        name = "config-out"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                    volume {
+                        name = "collection-secret"
+
+                        secret {
+                            default_mode = "0644"
+                            optional     = false
+                            secret_name  = "collection"
+                        }
+                    }
+                    volume {
+                        name = "set-google-credentials-in-aws"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "set-google-credentials-in-aws"
+                            optional     = false
+                        }
+                    }
+                    volume {
+                        name = "gmp-stackdriver-exporter-key"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_deployment_v1.gmp_operator_deployment will be updated in-place
+  # (imported from "gmp-system/gmp-operator")
+  ~ resource "kubernetes_deployment_v1" "gmp_operator_deployment" {
+        id               = "gmp-system/gmp-operator"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 7
+            labels           = {
+                "app"                         = "managed-prometheus-operator"
+                "app.kubernetes.io/component" = "operator"
+                "app.kubernetes.io/name"      = "gmp-operator"
+                "app.kubernetes.io/part-of"   = "gmp"
+            }
+            name             = "gmp-operator"
+            namespace        = "gmp-system"
+            resource_version = "322031909"
+            uid              = "020a5187-5d09-46bd-9824-90c446dc2081"
+        }
+
+        spec {
+            min_ready_seconds         = 0
+            paused                    = false
+            progress_deadline_seconds = 600
+            replicas                  = "1"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app.kubernetes.io/component" = "operator"
+                    "app.kubernetes.io/name"      = "gmp-operator"
+                    "app.kubernetes.io/part-of"   = "gmp"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_surge       = "25%"
+                    max_unavailable = "25%"
+                }
+            }
+
+            template {
+                metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "app"                         = "managed-prometheus-operator"
+                        "app.kubernetes.io/component" = "operator"
+                        "app.kubernetes.io/name"      = "gmp-operator"
+                        "app.kubernetes.io/part-of"   = "gmp"
+                        "app.kubernetes.io/version"   = "0.8.2"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+                spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = true
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {}
+                    priority_class_name              = "gmp-critical"
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "operator"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                    affinity {
+                        node_affinity {
+                            required_during_scheduling_ignored_during_execution {
+                                node_selector_term {
+                                    match_expressions {
+                                        key      = "kubernetes.io/arch"
+                                        operator = "In"
+                                        values   = [
+                                            "amd64",
+                                            "arm64",
+                                        ]
+                                    }
+                                    match_expressions {
+                                        key      = "kubernetes.io/os"
+                                        operator = "In"
+                                        values   = [
+                                            "linux",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    container {
+                        args                       = [
+                            "--operator-namespace=gmp-system",
+                            "--public-namespace=gmp-public",
+                            "--webhook-addr=:10250",
+                            "--project-id=aws-connector-glean-dev-2",
+                            "--location=us-central1-a",
+                            "--cluster=glean-cluster",
+                        ]
+                        command                    = []
+                        image                      = "gke.gcr.io/prometheus-engine/operator:v0.8.1-gke.6"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "operator"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        port {
+                            container_port = 10250
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "web"
+                            protocol       = "TCP"
+                        }
+                        port {
+                            container_port = 18080
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "metrics"
+                            protocol       = "TCP"
+                        }
+
+                        resources {
+                            limits   = {
+                                "memory" = "2G"
+                            }
+                            requests = {
+                                "cpu"    = "1m"
+                                "memory" = "16M"
+                            }
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = null
+                            run_as_non_root            = false
+                            run_as_user                = null
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+                        }
+                    }
+
+                    security_context {
+                        fs_group               = null
+                        fs_group_change_policy = null
+                        run_as_group           = "1000"
+                        run_as_non_root        = true
+                        run_as_user            = "1000"
+                        supplemental_groups    = []
+
+                        seccomp_profile {
+                            localhost_profile = null
+                            type              = "RuntimeDefault"
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "kubernetes.io/arch"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "amd64"
+                    }
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "kubernetes.io/arch"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "arm64"
+                    }
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_deployment_v1.gmp_rule_evaluator will be updated in-place
+  # (imported from "gmp-system/rule-evaluator")
+  ~ resource "kubernetes_deployment_v1" "gmp_rule_evaluator" {
+        id               = "gmp-system/rule-evaluator"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 11
+            labels           = {}
+            name             = "rule-evaluator"
+            namespace        = "gmp-system"
+            resource_version = "322795814"
+            uid              = "8b421853-fb42-4312-aeb7-8b09c4431d74"
+        }
+
+        spec {
+            min_ready_seconds         = 0
+            paused                    = false
+            progress_deadline_seconds = 600
+            replicas                  = "1"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app.kubernetes.io/name" = "rule-evaluator"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_surge       = "25%"
+                    max_unavailable = "25%"
+                }
+            }
+
+            template {
+                metadata {
+                    annotations      = {
+                        "cluster-autoscaler.kubernetes.io/safe-to-evict" = "true"
+                        "components.gke.io/component-name"               = "managed_prometheus"
+                    }
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "app"                       = "managed-prometheus-rule-evaluator"
+                        "app.kubernetes.io/name"    = "rule-evaluator"
+                        "app.kubernetes.io/version" = "0.8.2"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+                spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = true
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {}
+                    priority_class_name              = "gmp-critical"
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "gmp-collector"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                    affinity {
+                        node_affinity {
+                            required_during_scheduling_ignored_during_execution {
+                                node_selector_term {
+                                    match_expressions {
+                                        key      = "kubernetes.io/arch"
+                                        operator = "In"
+                                        values   = [
+                                            "amd64",
+                                            "arm64",
+                                        ]
+                                    }
+                                    match_expressions {
+                                        key      = "kubernetes.io/os"
+                                        operator = "In"
+                                        values   = [
+                                            "linux",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    container {
+                        args                       = [
+                            "--config-file=/prometheus/config/config.yaml",
+                            "--config-file-output=/prometheus/config_out/config.yaml",
+                            "--watched-dir=/etc/rules",
+                            "--watched-dir=/etc/secrets",
+                            "--reload-url=http://localhost:19092/-/reload",
+                            "--ready-url=http://localhost:19092/-/ready",
+                            "--listen-address=:19093",
+                        ]
+                        command                    = []
+                        image                      = "gke.gcr.io/prometheus-engine/config-reloader:v0.8.1-gke.6"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "config-reloader"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        port {
+                            container_port = 19093
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "cfg-rel-metrics"
+                            protocol       = "TCP"
+                        }
+
+                        resources {
+                            limits   = {
+                                "memory" = "32M"
+                            }
+                            requests = {
+                                "cpu"    = "1m"
+                                "memory" = "4M"
+                            }
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/config"
+                            mount_propagation = "None"
+                            name              = "config"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/rules"
+                            mount_propagation = "None"
+                            name              = "rules"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/secrets"
+                            mount_propagation = "None"
+                            name              = "rules-secret"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                    }
+                    container {
+                        args                       = [
+                            "--config.file=/prometheus/config_out/config.yaml",
+                            "--web.listen-address=:19092",
+                            "--export.user-agent-mode=kubectl",
+                        ]
+                        command                    = []
+                        image                      = "gke.gcr.io/prometheus-engine/rule-evaluator:v0.8.1-gke.6"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "evaluator"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        env {
+                            name  = "GOOGLE_APPLICATION_CREDENTIALS"
+                            value = "/etc/stackdriver-exporter-key/stackdriver-exporter-key.json"
+                        }
+                        env {
+                            name  = "EXTRA_ARGS"
+                            value = "--export.label.project-id=\"aws-connector-glean-dev-2\" --export.label.location=\"us-central1-a\" --export.label.cluster=\"glean-cluster\" --query.project-id=\"aws-connector-glean-dev-2\""
+                        }
+
+                        liveness_probe {
+                            failure_threshold     = 3
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 1
+
+                            http_get {
+                                host   = null
+                                path   = "/-/healthy"
+                                port   = "19092"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 19092
+                            host_ip        = null
+                            host_port      = 0
+                            name           = "r-eval-metrics"
+                            protocol       = "TCP"
+                        }
+
+                        readiness_probe {
+                            failure_threshold     = 3
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 1
+
+                            http_get {
+                                host   = null
+                                path   = "/-/ready"
+                                port   = "19092"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "memory" = "1G"
+                            }
+                            requests = {
+                                "cpu"    = "1m"
+                                "memory" = "16M"
+                            }
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/rules"
+                            mount_propagation = "None"
+                            name              = "rules"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/secrets"
+                            mount_propagation = "None"
+                            name              = "rules-secret"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/stackdriver-exporter-key"
+                            mount_propagation = "None"
+                            name              = "gmp-stackdriver-exporter-key"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                    init_container {
+                        args                       = []
+                        command                    = [
+                            "/bin/bash",
+                            "-c",
+                            "touch /prometheus/config_out/config.yaml",
+                        ]
+                        image                      = "gke.gcr.io/gke-distroless/bash:20220419"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "config-init"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {}
+                            requests = {}
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = false
+                            privileged                 = false
+                            read_only_root_filesystem  = false
+                            run_as_group               = "1000"
+                            run_as_non_root            = true
+                            run_as_user                = "1000"
+
+                            capabilities {
+                                add  = []
+                                drop = [
+                                    "all",
+                                ]
+                            }
+
+                            seccomp_profile {
+                                localhost_profile = null
+                                type              = "RuntimeDefault"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/prometheus/config_out"
+                            mount_propagation = "None"
+                            name              = "config-out"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+                    init_container {
+                        args                       = []
+                        command                    = [
+                            "/bin/bash",
+                            "-c",
+                            "mkdir -p /tmp/glean && cp /var/lib/glean/set-google-credentials-in-aws.sh /tmp/glean/set-google-credentials-in-aws.sh && chmod +x /tmp/glean/set-google-credentials-in-aws.sh && /tmp/glean/set-google-credentials-in-aws.sh --google_credentials_in_aws_output_path=/etc/stackdriver-exporter-key/stackdriver-exporter-key.json",
+                        ]
+                        image                      = "amazon/aws-cli:2.1.34"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "glean-set-google-credentials-in-aws"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {}
+                            requests = {}
+                        }
+
+                        security_context {
+                            allow_privilege_escalation = true
+                            privileged                 = true
+                            read_only_root_filesystem  = false
+                            run_as_group               = null
+                            run_as_non_root            = false
+                            run_as_user                = "0"
+                        }
+
+                        volume_mount {
+                            mount_path        = "/var/lib/glean"
+                            mount_propagation = "None"
+                            name              = "set-google-credentials-in-aws"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/stackdriver-exporter-key"
+                            mount_propagation = "None"
+                            name              = "gmp-stackdriver-exporter-key"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "kubernetes.io/arch"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "amd64"
+                    }
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "kubernetes.io/arch"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "arm64"
+                    }
+
+                    volume {
+                        name = "config"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "rule-evaluator"
+                            optional     = false
+                        }
+                    }
+                    volume {
+                        name = "config-out"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                    volume {
+                        name = "rules"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "rules-generated"
+                            optional     = false
+                        }
+                    }
+                    volume {
+                        name = "rules-secret"
+
+                        secret {
+                            default_mode = "0644"
+                            optional     = false
+                            secret_name  = "rules"
+                        }
+                    }
+                    volume {
+                        name = "set-google-credentials-in-aws"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "set-google-credentials-in-aws"
+                            optional     = false
+                        }
+                    }
+                    volume {
+                        name = "gmp-stackdriver-exporter-key"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_namespace_v1.gmp_public will be imported
+    resource "kubernetes_namespace_v1" "gmp_public" {
+        id = "gmp-public"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-public"
+            resource_version = "135604846"
+            uid              = "cd3f2f74-2a13-4f93-9230-9e7831e85596"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_namespace_v1.gmp_system will be imported
+    resource "kubernetes_namespace_v1" "gmp_system" {
+        id = "gmp-system"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-system"
+            resource_version = "135604847"
+            uid              = "ad9fd795-34be-4b7b-95a1-10707e1bac6d"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_service_account_v1.gmp_collector will be imported
+    resource "kubernetes_service_account_v1" "gmp_collector" {
+        automount_service_account_token = true
+        default_secret_name             = null
+        id                              = "gmp-system/gmp-collector"
+
+        metadata {
+            annotations      = {
+                "eks.amazonaws.com/role-arn" = "arn:aws:iam::761376532301:role/GoogleManagedPrometheusCollectorRole"
+            }
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-collector"
+            namespace        = "gmp-system"
+            resource_version = "135604853"
+            uid              = "5f042a38-4014-4d7b-892c-015ecc655fc4"
+        }
+    }
+
+  # module.k8s.module.gmp.module.gmp_operator_and_pod_monitoring.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "gmp-operators-and-pod-monitoring-latest"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=GMP_OPERATORS_AND_POD_MONITORING",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:389dc69a86b6ad51a02f35eb63b31a7fdd9db2cbdc733baa16b542a22a99da4f"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+Plan: 7 to import, 1 to add, 3 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

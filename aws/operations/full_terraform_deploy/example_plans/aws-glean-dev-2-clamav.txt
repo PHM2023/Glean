@@ -1,0 +1,174 @@
+# Example plan output for CLAM_AV deploy on aws-glean-dev-2
+
+
+  # module.k8s.kubernetes_daemon_set_v1.clamav will be updated in-place
+  # (imported from "kube-system/clamav")
+  ~ resource "kubernetes_daemon_set_v1" "clamav" {
+        id               = "kube-system/clamav"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 15
+            labels           = {
+                "k8s-app" = "clamav-host-scanner"
+            }
+            name             = "clamav"
+            namespace        = "kube-system"
+            resource_version = "338885047"
+            uid              = "0b2eb4cb-86c2-415c-8d34-54543400e098"
+        }
+
+      ~ spec {
+            min_ready_seconds      = 0
+            revision_history_limit = 10
+
+            selector {
+                match_labels = {
+                    "name" = "clamav"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_unavailable = "1"
+                }
+            }
+
+          ~ template {
+                metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "name" = "clamav"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = false
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {}
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = null
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                    container {
+                        args                       = []
+                        command                    = []
+                        image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/clamav@sha256:232d7b00b05db58a6f2858fe5e0d12e6797e48ad5b47c027ac8fe895915a7054"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "clamav-scanner"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        liveness_probe {
+                            failure_threshold     = 3
+                            initial_delay_seconds = 240
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 1
+
+                            exec {
+                                command = [
+                                    "/health.sh",
+                                ]
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "cpu"    = "500m"
+                                "memory" = "1932735283200m"
+                            }
+                            requests = {
+                                "cpu"    = "100m"
+                                "memory" = "1Gi"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/data"
+                            mount_propagation = "None"
+                            name              = "data-vol"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/host-fs"
+                            mount_propagation = "None"
+                            name              = "host-fs"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/logs"
+                            mount_propagation = "None"
+                            name              = "logs"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                  ~ toleration {
+                        effect             = "NoSchedule"
+                        key                = "node-role.kubernetes.io/master"
+                      + operator           = "Equal"
+                        toleration_seconds = null
+                        value              = null
+                    }
+
+                    volume {
+                        name = "data-vol"
+
+                        empty_dir {
+                            medium     = null
+                            size_limit = null
+                        }
+                    }
+                    volume {
+                        name = "host-fs"
+
+                        host_path {
+                            path = "/"
+                            type = null
+                        }
+                    }
+                    volume {
+                        name = "logs"
+
+                        host_path {
+                            path = "/var/log/clamav"
+                            type = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+Plan: 1 to import, 0 to add, 12 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

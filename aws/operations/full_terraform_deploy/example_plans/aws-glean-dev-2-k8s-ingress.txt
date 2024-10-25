@@ -1,0 +1,826 @@
+# Example plan from running K8S_INGRESS on aws-glean-dev-2
+
+ # module.k8s.kubernetes_ingress_v1.glean_ingress will be updated in-place
+  # (imported from "default/glean-ingress")
+  ~ resource "kubernetes_ingress_v1" "glean_ingress" {
+        id                     = "default/glean-ingress"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = [
+                            {
+                                hostname = "k8s-default-gleaning-ead1355550-1912294288.us-west-1.elb.amazonaws.com"
+                                ip       = null
+                            },
+                        ]
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = true
+
+      ~ metadata {
+          ~ annotations      = {
+              + "alb.ingress.kubernetes.io/certificate-arn"          = "arn:aws:acm:us-west-1:761376532301:certificate/440fb713-1348-44ea-ba75-b2a3b1e4520e"
+              + "alb.ingress.kubernetes.io/healthcheck-path"         = "/liveness_check"
+              + "alb.ingress.kubernetes.io/healthy-threshold-count"  = "3"
+              + "alb.ingress.kubernetes.io/listen-ports"             = jsonencode(
+                    [
+                      + {
+                          + HTTPS = 443
+                        },
+                    ]
+                )
+              + "alb.ingress.kubernetes.io/load-balancer-attributes" = "idle_timeout.timeout_seconds=900,access_logs.s3.enabled=true,access_logs.s3.bucket=ingress-logs-761376532301"
+              + "alb.ingress.kubernetes.io/name"                     = "glean-external-lb"
+              + "alb.ingress.kubernetes.io/scheme"                   = "internet-facing"
+              + "alb.ingress.kubernetes.io/ssl-policy"               = "ELBSecurityPolicy-TLS13-1-2-2021-06"
+              + "alb.ingress.kubernetes.io/ssl-redirect"             = "443"
+              + "alb.ingress.kubernetes.io/tags"                     = "final1=venkat3,foo=bar,instance=aws-glean-dev-2,testing=venkat,testing1=venkat2,testing2=connor"
+              + "alb.ingress.kubernetes.io/target-type"              = "ip"
+              + "alb.ingress.kubernetes.io/wafv2-acl-arn"            = "arn:aws:wafv2:us-west-1:761376532301:regional/webacl/glean-waf/2ee7064f-01ac-447f-9f5c-fe08800d6032"
+              + "kubernetes.io/ingress.class"                        = "alb"
+            }
+            generate_name    = null
+            generation       = 14
+            labels           = {}
+            name             = "glean-ingress"
+            namespace        = "default"
+            resource_version = "314204027"
+            uid              = "83f8846e-4f9e-4536-aa0b-4c5edc95c1be"
+        }
+
+        spec {
+            ingress_class_name = null
+
+            rule {
+                host = null
+
+                http {
+                    path {
+                        path      = "/admin"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "admin-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/slack"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/rest/api/v1/feedback"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/rest/api/v1/activity"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/robots.txt"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/rest/api/v1/getdocpermissions"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/jira"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/internal/leaderboard"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/instance"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/oauth/instance"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/github"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/githubenterprise"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/egnyte"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/datasources"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/confluence"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/bitbucket"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/v1/custom_feedback"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/v1/ca"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/v1/feedback"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/v1/activity"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/index/v1"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/api/tools/v1"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/urlcanonicalization"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/federatedsearch"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/dse"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/redirect"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/qe/getexternaldocumentproxy"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/tools"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/ipjc/v2"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "ipjc-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/ipjc_public_key"
+                        path_type = "Exact"
+
+                        backend {
+                            service {
+                                name = "dse-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/qp"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "qp-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/scholastic"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "scholastic-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/rest/api/v1"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "qe-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                    path {
+                        path      = "/"
+                        path_type = "Prefix"
+
+                        backend {
+                            service {
+                                name = "qe-service"
+
+                                port {
+                                    name   = null
+                                    number = 80
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+  # module.k8s.kubernetes_service_v1.ipjc will be updated in-place
+  # (imported from "default/ipjc-service")
+  ~ resource "kubernetes_service_v1" "ipjc" {
+        id                     = "default/ipjc-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = []
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {
+                "app" = "ipjc"
+            }
+            name             = "ipjc-service"
+            namespace        = "default"
+            resource_version = "292778138"
+            uid              = "7f5ce4ff-03a5-4acd-8e26-165dfee66a1b"
+        }
+
+        spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.25.124"
+            cluster_ips                       = [
+                "172.20.25.124",
+            ]
+            external_ips                      = []
+            external_name                     = null
+            external_traffic_policy           = "Local"
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = null
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "dse"
+            }
+            session_affinity                  = "None"
+            type                              = "NodePort"
+
+            port {
+                app_protocol = null
+                name         = null
+                node_port    = 31627
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "8080"
+            }
+        }
+    }
+
+
+  # module.aws_k8s.module.external_lb_dns_ipjc_update.kubernetes_job.config_update_job will be created
+  + resource "kubernetes_job" "config_update_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "external-lb-ipjc-update"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit   = 2
+          + completion_mode = (known after apply)
+          + completions     = 1
+          + parallelism     = 1
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--path=ipjc_update",
+                          + "--ipjc_channel_path=/aws/dns/lb_mapping",
+                          + "--ipjc_request_body='<none>'",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/config_handler@sha256:53bd07afbef439842b32a084b31026954d90a1d0140bf2908454c5ef532266c1"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name  = "GOOGLE_PROJECT_NUMBER"
+                          + value = "858376633098"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+
+# NOTE: this wasn't everything included in my plan, but I've omitted all the downstream stuff that's not relevant here
+# (e.g. admin console being updated with a new image, etc.)

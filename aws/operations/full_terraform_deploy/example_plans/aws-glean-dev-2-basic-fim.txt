@@ -1,0 +1,196 @@
+# Example run for BASIC_FIM on aws-glean-dev-2
+
+
+  # module.k8s.kubernetes_daemon_set_v1.basic_fim will be updated in-place
+  # (imported from "kube-system/basic-fim")
+  ~ resource "kubernetes_daemon_set_v1" "basic_fim" {
+        id               = "kube-system/basic-fim"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 9
+            labels           = {
+                "k8s-app" = "basic-fim-scanner"
+            }
+            name             = "basic-fim"
+            namespace        = "kube-system"
+            resource_version = "334454113"
+            uid              = "f5e1a9d9-cdb2-4322-89c9-f45bf9a8a1f5"
+        }
+
+      ~ spec {
+            min_ready_seconds      = 0
+            revision_history_limit = 10
+
+            selector {
+                match_labels = {
+                    "name" = "basic-fim"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_unavailable = "1"
+                }
+            }
+
+          ~ template {
+                metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "name" = "basic-fim"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = false
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {}
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = null
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                    affinity {
+                        node_affinity {
+                            required_during_scheduling_ignored_during_execution {
+                                node_selector_term {
+                                    match_expressions {
+                                        key      = "glean.com/elastic-node-pool-selector"
+                                        operator = "In"
+                                        values   = [
+                                            "elastic-node-pool-1",
+                                            "elastic-node-pool-2",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    container {
+                        args                       = []
+                        command                    = []
+                        image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/basic-fim@sha256:8fc1ab8300978d4505f099976d04b6725113b2757ae2a06f962beab16c599912"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "basic-fim-scanner"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {
+                                "memory" = "2Gi"
+                            }
+                            requests = {
+                                "cpu"    = "500m"
+                                "memory" = "500Mi"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/host-fs"
+                            mount_propagation = "None"
+                            name              = "host-fs"
+                            read_only         = true
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/logs"
+                            mount_propagation = "None"
+                            name              = "logs"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+                    container {
+                        args                       = [
+                            "/bin/sh",
+                            "-c",
+                            "tail -n+1 -f /logs/scan.log",
+                        ]
+                        command                    = []
+                        image                      = "docker.io/library/alpine:latest"
+                        image_pull_policy          = "Always"
+                        name                       = "basic-fim-logger"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                        resources {
+                            limits   = {
+                                "memory" = "500Mi"
+                            }
+                            requests = {
+                                "cpu"    = "100m"
+                                "memory" = "100Mi"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/logs"
+                            mount_propagation = "None"
+                            name              = "logs"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                    }
+
+                  ~ toleration {
+                        effect             = "NoSchedule"
+                        key                = "node-role.kubernetes.io/master"
+                      + operator           = "Equal"
+                        toleration_seconds = null
+                        value              = null
+                    }
+
+                    volume {
+                        name = "host-fs"
+
+                        host_path {
+                            path = "/"
+                            type = null
+                        }
+                    }
+                    volume {
+                        name = "logs"
+
+                        host_path {
+                            path = "/var/log/basic-fim"
+                            type = null
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+Plan: 1 to import, 0 to add, 1 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

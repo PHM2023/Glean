@@ -1,0 +1,1058 @@
+# Example plan output for running TASK_HANDLERS on aws-glean-dev-2:
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
++/- create replacement and then destroy
+
+Terraform will perform the following actions:
+
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["Name"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,Name")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,Name"
+
+      ~ tag {
+            key                 = "Name"
+          ~ propagate_at_launch = false -> true
+          ~ value               = "glean-asg-crawler-nodegroup" -> "crawler-nodegroup-asg"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["final1"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,final1")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,final1"
+
+      ~ tag {
+            key                 = "final1"
+          ~ propagate_at_launch = false -> true
+            value               = "venkat3"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["foo"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,foo")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,foo"
+
+      ~ tag {
+            key                 = "foo"
+          ~ propagate_at_launch = false -> true
+            value               = "bar"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["instance"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,instance")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,instance"
+
+      ~ tag {
+            key                 = "instance"
+          ~ propagate_at_launch = false -> true
+            value               = "aws-glean-dev-2"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["testing"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing"
+
+      ~ tag {
+            key                 = "testing"
+          ~ propagate_at_launch = false -> true
+            value               = "venkat"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["testing1"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing1")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing1"
+
+      ~ tag {
+            key                 = "testing1"
+          ~ propagate_at_launch = false -> true
+            value               = "venkat2"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_autoscaling_group_tag.tag["testing2"] will be updated in-place
+  # (imported from "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing2")
+  ~ resource "aws_autoscaling_group_tag" "tag" {
+        autoscaling_group_name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        id                     = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2,testing2"
+
+      ~ tag {
+            key                 = "testing2"
+          ~ propagate_at_launch = false -> true
+            value               = "connor"
+        }
+    }
+
+  # module.crawler_nodegroup.aws_eks_node_group.node_group will be updated in-place
+  # (imported from "glean-cluster:crawler-nodegroup")
+  ~ resource "aws_eks_node_group" "node_group" {
+        ami_type               = "AL2_x86_64"
+        arn                    = "arn:aws:eks:us-west-1:761376532301:nodegroup/glean-cluster/crawler-nodegroup/8ec6799d-c287-7944-b19a-235db6c4f5f2"
+        capacity_type          = "ON_DEMAND"
+        cluster_name           = "glean-cluster"
+        disk_size              = 0
+      + force_update_version   = true
+        id                     = "glean-cluster:crawler-nodegroup"
+        instance_types         = [
+            "r6i.large",
+        ]
+        labels                 = {
+            "glean.com/node-pool-selector" = "crawler-nodegroup"
+        }
+        node_group_name        = "crawler-nodegroup"
+        node_group_name_prefix = null
+        node_role_arn          = "arn:aws:iam::761376532301:role/eksWorkerNode"
+        release_version        = "1.27.7-20231230"
+        resources              = [
+            {
+                autoscaling_groups              = [
+                    {
+                        name = "eks-crawler-nodegroup-8ec6799d-c287-7944-b19a-235db6c4f5f2"
+                    },
+                ]
+                remote_access_security_group_id = null
+            },
+        ]
+        status                 = "ACTIVE"
+        subnet_ids             = [
+            "subnet-038eced06a2a4af69",
+        ]
+        tags                   = {}
+      ~ tags_all               = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+        version                = "1.27"
+
+        launch_template {
+            id      = "lt-0bca9c63300d86999"
+            name    = "crawler-nodegroup-launch-template"
+            version = "6"
+        }
+
+        scaling_config {
+            desired_size = 2
+            max_size     = 50
+            min_size     = 0
+        }
+
+        update_config {
+            max_unavailable            = 1
+            max_unavailable_percentage = 0
+        }
+    }
+
+  # module.crawler_nodegroup.aws_launch_template.node_group_launch_template will be updated in-place
+  # (imported from "lt-0bca9c63300d86999")
+  ~ resource "aws_launch_template" "node_group_launch_template" {
+        arn                                  = "arn:aws:ec2:us-west-1:761376532301:launch-template/lt-0bca9c63300d86999"
+        default_version                      = 1
+        description                          = null
+        disable_api_stop                     = false
+        disable_api_termination              = false
+        ebs_optimized                        = null
+        id                                   = "lt-0bca9c63300d86999"
+        image_id                             = null
+        instance_initiated_shutdown_behavior = null
+        instance_type                        = null
+        kernel_id                            = null
+        key_name                             = null
+        latest_version                       = 6
+        name                                 = "crawler-nodegroup-launch-template"
+        name_prefix                          = null
+        ram_disk_id                          = null
+        security_group_names                 = []
+        tags                                 = {}
+      ~ tags_all                             = {
+          + "final1"   = "venkat3"
+          + "foo"      = "bar"
+          + "instance" = "aws-glean-dev-2"
+          + "testing"  = "venkat"
+          + "testing1" = "venkat2"
+          + "testing2" = "connor"
+        }
+        user_data                            = null
+        vpc_security_group_ids               = []
+
+        block_device_mappings {
+            device_name  = "/dev/xvda"
+            no_device    = null
+            virtual_name = null
+
+            ebs {
+                delete_on_termination = "true"
+                encrypted             = "true"
+                iops                  = 0
+                kms_key_id            = null
+                snapshot_id           = null
+                throughput            = 0
+                volume_size           = 100
+                volume_type           = "gp3"
+            }
+        }
+
+        metadata_options {
+            http_endpoint               = "enabled"
+            http_protocol_ipv6          = null
+            http_put_response_hop_limit = 2
+            http_tokens                 = "required"
+            instance_metadata_tags      = null
+        }
+
+        tag_specifications {
+            resource_type = "volume"
+            tags          = {
+                "Name"     = "crawler-nodegroup-volume"
+                "final1"   = "venkat3"
+                "foo"      = "bar"
+                "imds"     = "secure"
+                "instance" = "aws-glean-dev-2"
+                "testing"  = "venkat"
+                "testing1" = "venkat2"
+                "testing2" = "connor"
+            }
+        }
+        tag_specifications {
+            resource_type = "instance"
+            tags          = {
+                "Name"     = "crawler-nodegroup-instance"
+                "final1"   = "venkat3"
+                "foo"      = "bar"
+                "imds"     = "secure"
+                "instance" = "aws-glean-dev-2"
+                "testing"  = "venkat"
+                "testing1" = "venkat2"
+                "testing2" = "connor"
+            }
+        }
+    }
+
+  # module.k8s.module.crawler_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  # (imported from "default/crawler-deployment")
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/crawler-deployment"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 468
+            labels           = {}
+            name             = "crawler-deployment"
+            namespace        = "default"
+            resource_version = "317397507"
+            uid              = "7858d16a-47e0-4de6-8ab0-6d79f173591e"
+        }
+
+      ~ spec {
+            min_ready_seconds         = 0
+            paused                    = false
+            progress_deadline_seconds = 1500
+            replicas                  = "1"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app" = "crawler"
+                }
+            }
+
+          ~ strategy {
+                type = "RollingUpdate"
+
+              ~ rolling_update {
+                  ~ max_surge       = "25%" -> "100%"
+                  ~ max_unavailable = "25%" -> "0"
+                }
+            }
+
+          ~ template {
+              ~ metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                  ~ labels           = {
+                        "app"       = "crawler"
+                      + "glean-app" = "True"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                  ~ automount_service_account_token  = false -> true
+                    dns_policy                       = "ClusterFirst"
+                  ~ enable_service_links             = false -> true
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                  ~ node_selector                    = {
+                      - "glean.com/node-pool-selector" = "crawler-nodegroup" -> null
+                    }
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "task-handlers"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                  ~ termination_grace_period_seconds = 90 -> 60
+
+                  + affinity {
+                      + node_affinity {
+                          + required_during_scheduling_ignored_during_execution {
+                              + node_selector_term {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "crawler-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                  ~ container {
+                        args                       = []
+                        command                    = []
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/task_handlers@sha256:9dc425be8d0bd39be1900565fe43d9a8e153dfb6cbd16bc8e7c6149478b89812" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/task_handlers@sha256:cb092e0b8d15714fce54491eea7a956a31ad5cffdb2590c0b74b6ffaf5777ece"
+                        image_pull_policy          = "Always"
+                        name                       = "crawler"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "AWS_ACCOUNT_ID"
+                          ~ value = "aws-connector-glean-dev-2" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "AWS_DEFAULT_REGION"
+                          ~ value = "PRODUCTION" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "AWS_REGION"
+                          ~ value = "EKS" -> "us-west-1"
+                        }
+                        env {
+                            name  = "CLOUD_PLATFORM"
+                            value = "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "ENVIRONMENT"
+                          ~ value = "761376532301" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "us-west-1" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "ROLLOUT_ID" -> "GOOGLE_CLOUD_PROJECT"
+                          ~ value = "2024-07-12 13:59:18.909455-07:00" -> "aws-connector-glean-dev-2"
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "EKS_NODE_NAME"
+                          - value = "default" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "EKS_POD_NAME"
+                          - value = "crawler" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "EKS_POD_NAMESPACE"
+                          - value = "crawler" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "INSTANCE_ID"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "spec.nodeName" -> "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_CONTAINER_NAME"
+                          + value = "crawler"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "crawler"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.namespace" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "INSTANCE_ID" -> "PROFILER_SERVICE_NAME"
+                          + value = "crawler"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+
+                      ~ liveness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/liveness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 8080
+                            host_ip        = null
+                            host_port      = 0
+                            name           = null
+                            protocol       = "TCP"
+                        }
+
+                      ~ readiness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "cpu"    = "1500m"
+                                "memory" = "6Gi"
+                            }
+                            requests = {
+                                "cpu"    = "700m"
+                                "memory" = "2Gi"
+                            }
+                        }
+
+                        startup_probe {
+                            failure_threshold     = 5
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "glean-app"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "25m"
+          + update = "25m"
+        }
+    }
+
+  # module.k8s.module.crawler_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be updated in-place
+  # (imported from "default/crawler-hpa")
+  ~ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+        id = "default/crawler-hpa"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "crawler-hpa"
+            namespace        = "default"
+            resource_version = "324308985"
+            uid              = "0ba9c883-d86b-43b9-bda1-549264b4e8ef"
+        }
+
+      ~ spec {
+            max_replicas                      = 10
+            min_replicas                      = 1
+            target_cpu_utilization_percentage = 0
+
+          ~ behavior {
+                scale_down {
+                    select_policy                = "Max"
+                    stabilization_window_seconds = 1200
+
+                    policy {
+                        period_seconds = 15
+                        type           = "Percent"
+                        value          = 100
+                    }
+                }
+              ~ scale_up {
+                    select_policy                = "Max"
+                  ~ stabilization_window_seconds = 0 -> 300
+
+                  ~ policy {
+                        period_seconds = 15
+                      ~ type           = "Pods" -> "Percent"
+                      ~ value          = 4 -> 100
+                    }
+                  ~ policy {
+                        period_seconds = 15
+                      ~ type           = "Percent" -> "Pods"
+                      ~ value          = 100 -> 5
+                    }
+                }
+            }
+
+            metric {
+                type = "Resource"
+
+                resource {
+                    name = "cpu"
+
+                    target {
+                        average_utilization = 130
+                        average_value       = null
+                        type                = "Utilization"
+                        value               = null
+                    }
+                }
+            }
+
+            scale_target_ref {
+                api_version = "apps/v1"
+                kind        = "Deployment"
+                name        = "crawler-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.crawler_deployment.kubernetes_pod_disruption_budget_v1.pdb will be imported
+    resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+        id = "default/crawler-pdb"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 6
+            labels           = {}
+            name             = "crawler-pdb"
+            namespace        = "default"
+            resource_version = "317378581"
+            uid              = "733b0cc6-3e64-42ca-80c6-90295100ebcc"
+        }
+
+        spec {
+            max_unavailable = null
+            min_available   = "1"
+
+            selector {
+                match_labels = {
+                    "app" = "crawler"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.crawler_deployment.kubernetes_service_v1.service will be updated in-place
+  # (imported from "default/crawler-service")
+  ~ resource "kubernetes_service_v1" "service" {
+        id                     = "default/crawler-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = []
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = false
+
+        spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.59.242"
+            cluster_ips                       = [
+                "172.20.59.242",
+            ]
+            external_ips                      = []
+            external_name                     = null
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = null
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "crawler"
+            }
+            session_affinity                  = "None"
+            type                              = "ClusterIP"
+
+            port {
+                app_protocol = null
+                name         = null
+                node_port    = 0
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "8080"
+            }
+        }
+    }
+
+  # module.k8s.module.initialize_rabbitmq.kubernetes_job.deploy_job must be replaced
++/- resource "kubernetes_job" "deploy_job" {
+      ~ id                  = "deploy-jobs/initialize-rabbitmq-rabbitmq-task-push-full-tf" -> (known after apply)
+        # (1 unchanged attribute hidden)
+
+      ~ metadata {
+          - annotations      = {} -> null
+          ~ generation       = 1 -> (known after apply)
+          ~ labels           = {} -> (known after apply)
+          ~ name             = "initialize-rabbitmq-rabbitmq-task-push-full-tf" -> "initialize-rabbitmq-latest" # forces replacement
+          ~ resource_version = "324282280" -> (known after apply)
+          ~ uid              = "91809f0e-270b-4d7e-b018-ffb335b6156a" -> (known after apply)
+            # (2 unchanged attributes hidden)
+        }
+
+      ~ spec {
+          - active_deadline_seconds    = 0 -> null
+          ~ completion_mode            = "NonIndexed" -> (known after apply)
+          - manual_selector            = false -> null
+            # (4 unchanged attributes hidden)
+
+          - selector {
+            }
+
+          ~ template {
+              ~ metadata {
+                  - annotations      = {} -> null
+                  ~ generation       = 0 -> (known after apply)
+                  - labels           = {} -> null
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                    # (1 unchanged attribute hidden)
+                }
+              ~ spec {
+                  - active_deadline_seconds          = 0 -> null
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  ~ scheduler_name                   = "default-scheduler" -> (known after apply)
+                    # (14 unchanged attributes hidden)
+
+                  ~ container {
+                      ~ args                       = [
+                            # (1 unchanged element hidden)
+                            "--operation=INITIALIZE_RABBITMQ",
+                          ~ "--tag=rabbitmq-task-push-full-tf" -> "--tag=latest",
+                            "--scio_instance=aws-glean-dev-2",
+                            # (2 unchanged elements hidden)
+                        ]
+                      - command                    = [] -> null
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:e3abf98bf8a3fa0e19611665209c4c32112dca946ba98a9c0b59751af4e65c30" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:5ec9d98d747c79e912b552eda82d8d3ce3c2362af46e5c7512ec26ff08fc5d04"
+                      ~ image_pull_policy          = "IfNotPresent" -> (known after apply)
+                        name                       = "deploy"
+                      ~ termination_message_policy = "File" -> (known after apply)
+                        # (5 unchanged attributes hidden)
+
+                      ~ resources {
+                          ~ limits   = {
+                              ~ "cpu"    = "1" -> "1000m"
+                                # (1 unchanged element hidden)
+                            }
+                            # (1 unchanged attribute hidden)
+                        }
+
+                        # (15 unchanged blocks hidden)
+                    }
+
+                    # (1 unchanged block hidden)
+                }
+            }
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.k8s.module.queues.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "queues-latest"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=QUEUES",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:5ec9d98d747c79e912b552eda82d8d3ce3c2362af46e5c7512ec26ff08fc5d04"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+  # module.k8s.module.sql.kubernetes_job.deploy_job must be replaced
++/- resource "kubernetes_job" "deploy_job" {
+      ~ id                  = "deploy-jobs/sql-rabbitmq-task-push-full-tf" -> (known after apply)
+        # (1 unchanged attribute hidden)
+
+      ~ metadata {
+          - annotations      = {} -> null
+          ~ generation       = 1 -> (known after apply)
+          ~ labels           = {} -> (known after apply)
+          ~ name             = "sql-rabbitmq-task-push-full-tf" -> "sql-latest" # forces replacement
+          ~ resource_version = "324279083" -> (known after apply)
+          ~ uid              = "e4c2ccea-8f21-4454-8d84-3332a81b4f05" -> (known after apply)
+            # (2 unchanged attributes hidden)
+        }
+
+      ~ spec {
+          - active_deadline_seconds    = 0 -> null
+          ~ completion_mode            = "NonIndexed" -> (known after apply)
+          - manual_selector            = false -> null
+            # (4 unchanged attributes hidden)
+
+          - selector {
+            }
+
+          ~ template {
+              ~ metadata {
+                  - annotations      = {} -> null
+                  ~ generation       = 0 -> (known after apply)
+                  - labels           = {} -> null
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                    # (1 unchanged attribute hidden)
+                }
+              ~ spec {
+                  - active_deadline_seconds          = 0 -> null
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  ~ scheduler_name                   = "default-scheduler" -> (known after apply)
+                    # (14 unchanged attributes hidden)
+
+                  ~ container {
+                      ~ args                       = [
+                            # (1 unchanged element hidden)
+                            "--operation=SQL",
+                          ~ "--tag=rabbitmq-task-push-full-tf" -> "--tag=latest",
+                            "--scio_instance=aws-glean-dev-2",
+                            # (2 unchanged elements hidden)
+                        ]
+                      - command                    = [] -> null
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:e3abf98bf8a3fa0e19611665209c4c32112dca946ba98a9c0b59751af4e65c30" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:5ec9d98d747c79e912b552eda82d8d3ce3c2362af46e5c7512ec26ff08fc5d04"
+                      ~ image_pull_policy          = "IfNotPresent" -> (known after apply)
+                        name                       = "deploy"
+                      ~ termination_message_policy = "File" -> (known after apply)
+                        # (5 unchanged attributes hidden)
+
+                      ~ resources {
+                          ~ limits   = {
+                              ~ "cpu"    = "1" -> "1000m"
+                                # (1 unchanged element hidden)
+                            }
+                            # (1 unchanged attribute hidden)
+                        }
+
+                        # (15 unchanged blocks hidden)
+                    }
+
+                    # (1 unchanged block hidden)
+                }
+            }
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.k8s.module.task_push_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/task-push-deployment"
+        # (1 unchanged attribute hidden)
+
+      ~ spec {
+            # (5 unchanged attributes hidden)
+
+          ~ template {
+              ~ spec {
+                    # (18 unchanged attributes hidden)
+
+                  ~ container {
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/task_push_aws@sha256:a9e4d2941a48924e81cb40353836538112d9804e418d691b5aed9541934de6b6" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/task_push_aws@sha256:612ed3ef6d4e763d253ef2b442ea0a6256d62ee1e3f4642d49a7407b04af75e0"
+                        name                       = "task-push"
+                        # (9 unchanged attributes hidden)
+
+                        # (19 unchanged blocks hidden)
+                    }
+
+                    # (3 unchanged blocks hidden)
+                }
+
+                # (1 unchanged block hidden)
+            }
+
+            # (2 unchanged blocks hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+Plan: 6 to import, 10 to add, 6 to change, 2 to destroy.
+
+Warning: Resource targeting is in effect

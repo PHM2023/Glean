@@ -1,0 +1,718 @@
+# Example plan for CLAMAV_SCANNER run
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+-/+ destroy and then create replacement
+
+Terraform will perform the following actions:
+
+  # null_resource.version_check must be replaced
+-/+ resource "null_resource" "version_check" {
+      ~ id       = "353398130917697704" -> (known after apply)
+      ~ triggers = { # forces replacement
+          ~ "version_tag" = "latest" -> "sriram-file-uploads-clamav-aws-deploy"
+        }
+    }
+
+  # module.k8s.module.clamav_scanner_deployment.kubernetes_deployment_v1.deployment will be created
+  + resource "kubernetes_deployment_v1" "deployment" {
+      + id               = (known after apply)
+      + wait_for_rollout = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "clamav-scanner-deployment"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_ready_seconds         = 0
+          + paused                    = false
+          + progress_deadline_seconds = 600
+          + replicas                  = "1"
+          + revision_history_limit    = 10
+
+          + selector {
+              + match_labels = {
+                  + "app" = "clamav-scanner"
+                }
+            }
+
+          + strategy {
+              + type = "RollingUpdate"
+
+              + rolling_update {
+                  + max_surge       = "100%"
+                  + max_unavailable = "0"
+                }
+            }
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + labels           = {
+                      + "app"       = "clamav-scanner"
+                      + "glean-app" = "True"
+                    }
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + restart_policy                   = "Always"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = (known after apply)
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 60
+
+                  + affinity {
+                      + node_affinity {
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 4
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-small-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 3
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-medium-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 2
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-large-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 1
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-xlarge-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + required_during_scheduling_ignored_during_execution {
+                              + node_selector_term {
+                                  + match_expressions {
+                                      + key      = "use"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-workload",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                  + container {
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/clamav-scanner@sha256:f6a2edc7bfe3fe76fa47e29fa7366fb50a29e994e72407d48040a5362e9fdb23"
+                      + image_pull_policy          = "Always"
+                      + name                       = "clamav-scanner"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name = "ROLLOUT_ID"
+                        }
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name  = "GOOGLE_PROJECT_NUMBER"
+                          + value = "858376633098"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "clamav-scanner"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "clamav-scanner"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "clamav-scanner"
+                        }
+
+                      + liveness_probe {
+                          + failure_threshold = 2
+                          + period_seconds    = 60
+                          + success_threshold = 1
+                          + timeout_seconds   = 4
+
+                          + http_get {
+                              + path   = "/ping"
+                              + port   = "8080"
+                              + scheme = "HTTP"
+                            }
+                        }
+
+                      + port {
+                          + container_port = 8080
+                          + protocol       = "TCP"
+                        }
+
+                      + readiness_probe {
+                          + failure_threshold = 2
+                          + period_seconds    = 60
+                          + success_threshold = 1
+                          + timeout_seconds   = 4
+
+                          + http_get {
+                              + path   = "/ping"
+                              + port   = "8080"
+                              + scheme = "HTTP"
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1500m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "3Gi"
+                            }
+                        }
+
+                      + startup_probe {
+                          + failure_threshold = 30
+                          + period_seconds    = 10
+                          + success_threshold = 1
+                          + timeout_seconds   = 4
+
+                          + http_get {
+                              + path   = "/ping"
+                              + port   = "8080"
+                              + scheme = "HTTP"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "glean-app"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "memory-based-workload"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "25m"
+          + update = "25m"
+        }
+    }
+
+  # module.k8s.module.clamav_scanner_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be created
+  + resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "clamav-scanner-hpa"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + max_replicas                      = 1
+          + min_replicas                      = 1
+          + target_cpu_utilization_percentage = (known after apply)
+
+          + behavior {
+              + scale_down {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 900
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                }
+              + scale_up {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 300
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Pods"
+                      + value          = 4
+                    }
+                }
+            }
+
+          + metric {
+              + type = "Resource"
+
+              + resource {
+                  + name = "cpu"
+
+                  + target {
+                      + average_utilization = 120
+                      + type                = "Utilization"
+                    }
+                }
+            }
+
+          + scale_target_ref {
+              + api_version = "apps/v1"
+              + kind        = "Deployment"
+              + name        = "clamav-scanner-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.clamav_scanner_deployment.kubernetes_pod_disruption_budget_v1.pdb will be created
+  + resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "clamav-scanner-pdb"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_available = "1"
+
+          + selector {
+              + match_labels = {
+                  + "app" = "clamav-scanner"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.clamav_scanner_deployment.kubernetes_service_v1.service will be created
+  + resource "kubernetes_service_v1" "service" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "clamav-scanner"
+            }
+          + name             = "clamav-scanner-service"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + allocate_load_balancer_node_ports = true
+          + cluster_ip                        = (known after apply)
+          + cluster_ips                       = (known after apply)
+          + external_traffic_policy           = "Cluster"
+          + health_check_node_port            = (known after apply)
+          + internal_traffic_policy           = "Cluster"
+          + ip_families                       = [
+              + "IPv4",
+            ]
+          + ip_family_policy                  = "SingleStack"
+          + publish_not_ready_addresses       = false
+          + selector                          = {
+              + "app" = "clamav-scanner"
+            }
+          + session_affinity                  = "None"
+          + type                              = "NodePort"
+
+          + port {
+              + node_port   = (known after apply)
+              + port        = 80
+              + protocol    = "TCP"
+              + target_port = "8080"
+            }
+        }
+    }
+
+  # module.k8s.module.sql.kubernetes_job.deploy_job is tainted, so must be replaced
+-/+ resource "kubernetes_job" "deploy_job" {
+      ~ id                  = "deploy-jobs/sql-latest" -> (known after apply)
+        # (1 unchanged attribute hidden)
+
+      ~ metadata {
+          - annotations      = {} -> null
+          ~ generation       = 1 -> (known after apply)
+          ~ labels           = {} -> (known after apply)
+          ~ name             = "sql-latest" -> "sql-sriram-file-uploads-clamav-aws-deploy"
+          ~ resource_version = "346447020" -> (known after apply)
+          ~ uid              = "98e2bfc2-b201-43d2-98a4-849bbb047afe" -> (known after apply)
+            # (1 unchanged attribute hidden)
+        }
+
+      ~ spec {
+          - active_deadline_seconds    = 0 -> null
+          ~ completion_mode            = "NonIndexed" -> (known after apply)
+          - manual_selector            = false -> null
+            # (4 unchanged attributes hidden)
+
+          - selector {
+            }
+
+          ~ template {
+              ~ metadata {
+                  - annotations      = {} -> null
+                  ~ generation       = 0 -> (known after apply)
+                  - labels           = {} -> null
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              ~ spec {
+                  - active_deadline_seconds          = 0 -> null
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  ~ scheduler_name                   = "default-scheduler" -> (known after apply)
+                    # (11 unchanged attributes hidden)
+
+                  ~ container {
+                      ~ args                       = [
+                            # (1 unchanged element hidden)
+                            "--operation=SQL",
+                          - "--tag=latest",
+                          + "--tag=sriram-file-uploads-clamav-aws-deploy",
+                            "--scio_instance=aws-glean-dev-2",
+                            # (2 unchanged elements hidden)
+                        ]
+                      - command                    = [] -> null
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:e422ee82de442b5ffc25f6cd586297997c3e4178c33ab294da4178af4c939985" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:82327b71282eb2876168e0935e4b5da6f5714021bb1f47c4a0c06b559096cbc4"
+                      ~ image_pull_policy          = "IfNotPresent" -> (known after apply)
+                        name                       = "deploy"
+                      ~ termination_message_policy = "File" -> (known after apply)
+                        # (4 unchanged attributes hidden)
+
+                      ~ resources {
+                          ~ limits   = {
+                              ~ "cpu"    = "1" -> "1000m"
+                                # (1 unchanged element hidden)
+                            }
+                            # (1 unchanged attribute hidden)
+                        }
+
+                        # (16 unchanged blocks hidden)
+                    }
+
+                    # (1 unchanged block hidden)
+                }
+            }
+        }
+
+        # (1 unchanged block hidden)
+    }
+
+  # module.k8s.module.upgrade.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "upgrade-sriram-file-uploads-clamav-aws-deploy"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=UPGRADE",
+                          + "--tag=sriram-file-uploads-clamav-aws-deploy",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:82327b71282eb2876168e0935e4b5da6f5714021bb1f47c4a0c06b559096cbc4"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name  = "GOOGLE_PROJECT_NUMBER"
+                          + value = "858376633098"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+Plan: 7 to add, 0 to change, 2 to destroy.

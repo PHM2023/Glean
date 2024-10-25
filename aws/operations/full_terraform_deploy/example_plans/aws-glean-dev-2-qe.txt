@@ -1,0 +1,1432 @@
+# Example plan for QE_GKE run
+
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.k8s.module.experiment_configs.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "experiment-configs-latest"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=EXPERIMENT_CONFIGS",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:0b235be598f8d2ced47258edc47d6b52102a57bafeddf6b2844ed10196d608da"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+  # module.k8s.module.put_elastic_scoring_scripts.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "put-elastic-scoring-scripts-latest"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=PUT_ELASTIC_SCORING_SCRIPTS",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:0b235be598f8d2ced47258edc47d6b52102a57bafeddf6b2844ed10196d608da"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+  # module.k8s.module.qe_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  # (imported from "default/qe-deployment")
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/qe-deployment"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 397
+            labels           = {}
+            name             = "qe-deployment"
+            namespace        = "default"
+            resource_version = "322875798"
+            uid              = "22615e4e-e3f7-49bb-850f-f077d519222a"
+        }
+
+      ~ spec {
+            min_ready_seconds         = 0
+            paused                    = false
+            progress_deadline_seconds = 1500
+            replicas                  = "2"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app" = "qe"
+                }
+            }
+
+            strategy {
+                type = "RollingUpdate"
+
+                rolling_update {
+                    max_surge       = "100%"
+                    max_unavailable = "0"
+                }
+            }
+
+          ~ template {
+              ~ metadata {
+                  ~ annotations      = {
+                      - "kubectl.kubernetes.io/restartedAt" = "2024-02-20T16:48:13-08:00" -> null
+                    }
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "app"       = "qe"
+                        "glean-app" = "True"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                  ~ automount_service_account_token  = false -> true
+                    dns_policy                       = "ClusterFirst"
+                  ~ enable_service_links             = false -> true
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                  ~ node_selector                    = {
+                      - "glean.com/node-pool-selector" = "nodegroup-t3_xlarge" -> null
+                    }
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "query-endpoint"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 60
+
+                  + affinity {
+                      + node_affinity {
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 4
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-small-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 3
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-medium-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 2
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-large-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 1
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-xlarge-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + required_during_scheduling_ignored_during_execution {
+                              + node_selector_term {
+                                  + match_expressions {
+                                      + key      = "use"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-workload",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                  ~ container {
+                        args                       = []
+                        command                    = []
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/qe@sha256:0c6c73f44ab0bf4bbd9723d396661c1c00528bd16e243c0cb18de6bfd7ad04b1" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/qe@sha256:ed2112c3880f71befb7070f4a9fa592bc194e950565085223c3db0d4ac660426"
+                        image_pull_policy          = "Always"
+                        name                       = "qe"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "ROLLOUT_ID"
+                          ~ value = "aws-connector-glean-dev-2" -> "foobar"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "AWS_ACCOUNT_ID"
+                          ~ value = "PRODUCTION" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "AWS_DEFAULT_REGION"
+                          ~ value = "EKS" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "CLOUD_PLATFORM" -> "AWS_REGION"
+                          ~ value = "AWS" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "CLOUD_PLATFORM"
+                          ~ value = "761376532301" -> "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "ENVIRONMENT"
+                          ~ value = "us-west-1" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "ROLLOUT_ID" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "2024-07-17 10:43:07.921944-07:00" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "GOOGLE_CLOUD_PROJECT"
+                          ~ value = "default" -> "aws-connector-glean-dev-2"
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "EKS_NODE_NAME"
+                          - value = "qe_eks" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "EKS_POD_NAME"
+                          - value = "qe" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "EKS_POD_NAMESPACE"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "spec.nodeName" -> "metadata.namespace"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "INSTANCE_ID"
+                            value = null
+
+                            value_from {
+                                field_ref {
+                                    api_version = "v1"
+                                    field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "EKS_CONTAINER_NAME"
+                          + value = "qe"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.namespace" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "INSTANCE_ID" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "qe"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "qe"
+                        }
+
+                      ~ liveness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/liveness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 8080
+                            host_ip        = null
+                            host_port      = 0
+                            name           = null
+                            protocol       = "TCP"
+                        }
+
+                      ~ readiness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        resources {
+                            limits   = {
+                                "cpu"    = "1200m"
+                                "memory" = "7Gi"
+                            }
+                            requests = {
+                                "cpu"    = "1"
+                                "memory" = "6Gi"
+                            }
+                        }
+
+                        startup_probe {
+                            failure_threshold     = 70
+                            initial_delay_seconds = 0
+                            period_seconds        = 10
+                            success_threshold     = 1
+                            timeout_seconds       = 4
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "glean-app"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "True"
+                    }
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "memory-based-workload"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "25m"
+          + update = "25m"
+        }
+    }
+
+  # module.k8s.module.qe_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be updated in-place
+  # (imported from "default/qe-hpa")
+  ~ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+        id = "default/qe-hpa"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "qe-hpa"
+            namespace        = "default"
+            resource_version = "325459784"
+            uid              = "a61d74bc-3dd9-46c5-95a5-46a29633638c"
+        }
+
+      ~ spec {
+            max_replicas                      = 20
+            min_replicas                      = 2
+            target_cpu_utilization_percentage = 0
+
+          ~ behavior {
+                scale_down {
+                    select_policy                = "Max"
+                    stabilization_window_seconds = 900
+
+                    policy {
+                        period_seconds = 15
+                        type           = "Percent"
+                        value          = 100
+                    }
+                }
+              ~ scale_up {
+                    select_policy                = "Max"
+                    stabilization_window_seconds = 300
+
+                  ~ policy {
+                        period_seconds = 15
+                      ~ type           = "Pods" -> "Percent"
+                      ~ value          = 4 -> 100
+                    }
+                  ~ policy {
+                        period_seconds = 15
+                      ~ type           = "Percent" -> "Pods"
+                      ~ value          = 100 -> 5
+                    }
+                }
+            }
+
+            metric {
+                type = "Resource"
+
+                resource {
+                    name = "cpu"
+
+                    target {
+                        average_utilization = 50
+                        average_value       = null
+                        type                = "Utilization"
+                        value               = null
+                    }
+                }
+            }
+
+            scale_target_ref {
+                api_version = "apps/v1"
+                kind        = "Deployment"
+                name        = "qe-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.qe_deployment.kubernetes_pod_disruption_budget_v1.pdb will be imported
+    resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+        id = "default/qe-pdb"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 1
+            labels           = {}
+            name             = "qe-pdb"
+            namespace        = "default"
+            resource_version = "322876629"
+            uid              = "66655837-13d2-4590-a356-58ec2ecf1537"
+        }
+
+        spec {
+            max_unavailable = null
+            min_available   = "2"
+
+            selector {
+                match_labels = {
+                    "app" = "qe"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.qe_deployment.kubernetes_service_v1.service will be updated in-place
+  # (imported from "default/qe-service")
+  ~ resource "kubernetes_service_v1" "service" {
+        id                     = "default/qe-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = []
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = false
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {
+                "app" = "qe"
+            }
+            name             = "qe-service"
+            namespace        = "default"
+            resource_version = "297397934"
+            uid              = "fa5d7082-5756-40fe-9cf7-f5f8c164a017"
+        }
+
+      ~ spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.254.184"
+            cluster_ips                       = [
+                "172.20.254.184",
+            ]
+            external_ips                      = []
+            external_name                     = null
+          ~ external_traffic_policy           = "Local" -> "Cluster"
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = null
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "qe"
+            }
+            session_affinity                  = "None"
+            type                              = "NodePort"
+
+            port {
+                app_protocol = null
+                name         = null
+                node_port    = 30840
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "8080"
+            }
+        }
+    }
+
+  # module.k8s.module.qp_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/qp-deployment"
+        # (1 unchanged attribute hidden)
+
+      ~ spec {
+            # (5 unchanged attributes hidden)
+
+          ~ template {
+              ~ metadata {
+                  ~ annotations      = {
+                      - "kubectl.kubernetes.io/restartedAt" = "2024-07-19T23:00:12Z" -> null
+                    }
+                    name             = null
+                    # (6 unchanged attributes hidden)
+                }
+              ~ spec {
+                    # (18 unchanged attributes hidden)
+
+                  ~ container {
+                        name                       = "qp"
+                        # (10 unchanged attributes hidden)
+
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "ROLLOUT_ID"
+                          ~ value = "761376532301" -> "foobar"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_DEFAULT_REGION" -> "AWS_ACCOUNT_ID"
+                          ~ value = "us-west-1" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "AWS_DEFAULT_REGION"
+                            # (1 unchanged attribute hidden)
+                        }
+                      ~ env {
+                          ~ name  = "CLOUD_PLATFORM" -> "AWS_REGION"
+                          ~ value = "AWS" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "CLOUD_PLATFORM"
+                          ~ value = "PRODUCTION" -> "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "ENVIRONMENT"
+                          ~ value = "EKS" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "aws-connector-glean-dev-2" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "spec.nodeName" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_NODE_NAME"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.name" -> "spec.nodeName"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "EKS_POD_NAME"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.namespace" -> "metadata.name"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "INSTANCE_ID" -> "EKS_POD_NAMESPACE"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.name" -> "metadata.namespace"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "INSTANCE_ID"
+                          - value = "qp" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "EKS_CONTAINER_NAME"
+                            # (1 unchanged attribute hidden)
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                            # (1 unchanged attribute hidden)
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "qp"
+                        }
+
+                        # (7 unchanged blocks hidden)
+                    }
+
+                    # (4 unchanged blocks hidden)
+                }
+            }
+
+            # (2 unchanged blocks hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.k8s.module.scholastic_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/scholastic-deployment"
+        # (1 unchanged attribute hidden)
+
+      ~ spec {
+            # (5 unchanged attributes hidden)
+
+          ~ template {
+              ~ spec {
+                    # (18 unchanged attributes hidden)
+
+                  ~ container {
+                        name                       = "scholastic"
+                        # (10 unchanged attributes hidden)
+
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "ROLLOUT_ID"
+                          ~ value = "761376532301" -> "foobar"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_DEFAULT_REGION" -> "AWS_ACCOUNT_ID"
+                          ~ value = "us-west-1" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "AWS_DEFAULT_REGION"
+                            # (1 unchanged attribute hidden)
+                        }
+                      ~ env {
+                          ~ name  = "CLOUD_PLATFORM" -> "AWS_REGION"
+                          ~ value = "AWS" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "CLOUD_PLATFORM"
+                          ~ value = "PRODUCTION" -> "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "ENVIRONMENT"
+                          ~ value = "EKS" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "aws-connector-glean-dev-2" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "spec.nodeName" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_NODE_NAME"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.name" -> "spec.nodeName"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "EKS_POD_NAME"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.namespace" -> "metadata.name"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "INSTANCE_ID" -> "EKS_POD_NAMESPACE"
+                            # (1 unchanged attribute hidden)
+
+                          ~ value_from {
+                              ~ field_ref {
+                                  ~ field_path  = "metadata.name" -> "metadata.namespace"
+                                    # (1 unchanged attribute hidden)
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "INSTANCE_ID"
+                          - value = "scholastic" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "EKS_CONTAINER_NAME"
+                            # (1 unchanged attribute hidden)
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                            # (1 unchanged attribute hidden)
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "scholastic"
+                        }
+
+                        # (7 unchanged blocks hidden)
+                    }
+
+                    # (4 unchanged blocks hidden)
+                }
+
+                # (1 unchanged block hidden)
+            }
+
+            # (2 unchanged blocks hidden)
+        }
+
+        # (2 unchanged blocks hidden)
+    }
+
+  # module.k8s.module.scholastic_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be updated in-place
+  # (imported from "default/scholastic-hpa")
+  ~ resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+        id = "default/scholastic-hpa"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "scholastic-hpa"
+            namespace        = "default"
+            resource_version = "325459779"
+            uid              = "9b8ae55e-8bb2-40f0-9872-d4fb93246c14"
+        }
+
+      ~ spec {
+            max_replicas                      = 20
+            min_replicas                      = 2
+            target_cpu_utilization_percentage = 0
+
+          + behavior {
+              + scale_down {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 900
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                }
+              + scale_up {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 300
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Pods"
+                      + value          = 5
+                    }
+                }
+            }
+
+            metric {
+                type = "Resource"
+
+                resource {
+                    name = "cpu"
+
+                    target {
+                        average_utilization = 80
+                        average_value       = null
+                        type                = "Utilization"
+                        value               = null
+                    }
+                }
+            }
+
+            scale_target_ref {
+                api_version = "apps/v1"
+                kind        = "Deployment"
+                name        = "scholastic-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.scholastic_deployment.kubernetes_pod_disruption_budget_v1.pdb will be imported
+    resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+        id = "default/scholastic-pdb"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 1
+            labels           = {}
+            name             = "scholastic-pdb"
+            namespace        = "default"
+            resource_version = "325154871"
+            uid              = "36f2635d-6bf0-49a8-ace1-6aad79947d87"
+        }
+
+        spec {
+            max_unavailable = null
+            min_available   = "2"
+
+            selector {
+                match_labels = {
+                    "app" = "scholastic"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.set_glean_azure_resource_configuration.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "set-glean-azure-resource-configuration-latest"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit              = 2
+          + completion_mode            = (known after apply)
+          + completions                = 1
+          + parallelism                = 1
+          + ttl_seconds_after_finished = "86400"
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=SET_GLEAN_AZURE_RESOURCE_CONFIGURATION",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:0b235be598f8d2ced47258edc47d6b52102a57bafeddf6b2844ed10196d608da"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+Plan: 6 to import, 3 to add, 6 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

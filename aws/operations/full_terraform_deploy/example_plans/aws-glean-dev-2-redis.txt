@@ -1,0 +1,392 @@
+# Example plan output for REDIS
+
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.k8s.kubernetes_config_map_v1.redis_config will be imported
+    resource "kubernetes_config_map_v1" "redis_config" {
+        binary_data = {}
+        data        = {
+            "redis.conf" = <<-EOT
+                # https://raw.githubusercontent.com/redis/redis/7.2/redis.conf
+                dir /etc/redis/data/
+            EOT
+        }
+        id          = "default/redis-config"
+        immutable   = false
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "redis-config"
+            namespace        = "default"
+            resource_version = "132630075"
+            uid              = "a2b13553-b33c-48e4-8a4e-5a5114f9e10a"
+        }
+    }
+
+  # module.k8s.kubernetes_service_v1.redis will be updated in-place
+  # (imported from "default/redis-service")
+  ~ resource "kubernetes_service_v1" "redis" {
+        id                     = "default/redis-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = [
+                            {
+                                hostname = "k8s-default-redisser-e8267f4a0c-c75d96adc9da4551.elb.us-west-1.amazonaws.com"
+                                ip       = null
+                            },
+                        ]
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = true
+
+      ~ metadata {
+          ~ annotations      = {
+              + "alb.ingress.kubernetes.io/name"                                        = "redis-internal-lb"
+              + "alb.ingress.kubernetes.io/scheme"                                      = "internal"
+              + "alb.ingress.kubernetes.io/target-type"                                 = "ip"
+              + "kubernetes.io/ingress.class"                                           = "alb"
+              ~ "service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags" = "instance=aws-glean-dev-2,foo=bar,testing=venkat,testing2=connor,testing1=venkat2,final1=venkat3" -> "final1=venkat3,foo=bar,instance=aws-glean-dev-2,testing=venkat,testing1=venkat2,testing2=connor"
+              + "service.beta.kubernetes.io/aws-load-balancer-nlb-target-type"          = "ip"
+              + "service.beta.kubernetes.io/aws-load-balancer-scheme"                   = "internal"
+            }
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "redis-service"
+            namespace        = "default"
+            resource_version = "297367119"
+            uid              = "30d6d495-d0ef-446b-baad-3a640877c84b"
+        }
+
+        spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.69.140"
+            cluster_ips                       = [
+                "172.20.69.140",
+            ]
+            external_ips                      = []
+            external_name                     = null
+            external_traffic_policy           = "Cluster"
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = "service.k8s.aws/nlb"
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = [
+                "10.0.0.0/8",
+            ]
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "redis"
+            }
+            session_affinity                  = "None"
+            type                              = "LoadBalancer"
+
+            port {
+                app_protocol = null
+                name         = null
+                node_port    = 31805
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "6379"
+            }
+        }
+    }
+
+  # module.k8s.kubernetes_stateful_set_v1.redis will be updated in-place
+  # (imported from "default/redis-deployment-statefulset")
+  ~ resource "kubernetes_stateful_set_v1" "redis" {
+        id               = "default/redis-deployment-statefulset"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 5
+            labels           = {}
+            name             = "redis-deployment-statefulset"
+            namespace        = "default"
+            resource_version = "334449065"
+            uid              = "5e639c05-d8d0-4401-aad3-3d6fe3db2ab6"
+        }
+
+      ~ spec {
+            pod_management_policy  = "OrderedReady"
+            replicas               = "1"
+            revision_history_limit = 10
+            service_name           = "redis-service"
+
+            persistent_volume_claim_retention_policy {
+                when_deleted = "Retain"
+                when_scaled  = "Retain"
+            }
+
+            selector {
+                match_labels = {
+                    "app" = "redis"
+                }
+            }
+
+          ~ template {
+                metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {
+                        "app" = "redis"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                    automount_service_account_token  = false
+                    dns_policy                       = "ClusterFirst"
+                    enable_service_links             = false
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                    node_selector                    = {
+                        "glean.com/node-pool-selector" = "nodegroup-r6i_large"
+                    }
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = null
+                    share_process_namespace          = false
+                    subdomain                        = null
+                    termination_grace_period_seconds = 30
+
+                  ~ container {
+                        args                       = []
+                        command                    = [
+                            "redis-server",
+                            "/etc/redis/redis.conf",
+                        ]
+                        image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/redis@sha256:17b12de3d8545bb3077f23bcd98d2975ac05f45436fc45d0ce492d35f3dc4101"
+                        image_pull_policy          = "IfNotPresent"
+                        name                       = "redis"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "AWS_ACCOUNT_ID"
+                          ~ value = "aws-connector-glean-dev-2" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "AWS_DEFAULT_REGION"
+                          ~ value = "PRODUCTION" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "AWS_REGION"
+                          ~ value = "EKS" -> "us-west-1"
+                        }
+                        env {
+                            name  = "CLOUD_PLATFORM"
+                            value = "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "ENVIRONMENT"
+                          ~ value = "default" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "redis" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "ROLLOUT_ID" -> "GOOGLE_CLOUD_PROJECT"
+                          ~ value = "2024-07-26 10:23:31.142507-07:00" -> "aws-connector-glean-dev-2"
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "GOOGLE_PROJECT_NUMBER"
+                          + value = "858376633098"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "spec.nodeName" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_NODE_NAME"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "metadata.name" -> "spec.nodeName"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "EKS_POD_NAME"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "metadata.namespace" -> "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "redis"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "redis"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "redis"
+                        }
+
+                        liveness_probe {
+                            failure_threshold     = 2
+                            initial_delay_seconds = 180
+                            period_seconds        = 5
+                            success_threshold     = 1
+                            timeout_seconds       = 4
+
+                            exec {
+                                command = [
+                                    "redis-cli",
+                                    "ping",
+                                ]
+                            }
+                        }
+
+                        port {
+                            container_port = 6379
+                            host_ip        = null
+                            host_port      = 0
+                            name           = null
+                            protocol       = "TCP"
+                        }
+
+                        resources {
+                            limits   = {
+                                "cpu"    = "300m"
+                                "memory" = "1Gi"
+                            }
+                            requests = {
+                                "cpu"    = "200m"
+                                "memory" = "1Gi"
+                            }
+                        }
+
+                        volume_mount {
+                            mount_path        = "/etc/redis/data/"
+                            mount_propagation = "None"
+                            name              = "redis-data"
+                            read_only         = false
+                            sub_path          = null
+                        }
+                        volume_mount {
+                            mount_path        = "/etc/redis/redis.conf"
+                            mount_propagation = "None"
+                            name              = "config-volume"
+                            read_only         = false
+                            sub_path          = "redis.conf"
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "glean-app"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "True"
+                    }
+
+                    volume {
+                        name = "config-volume"
+
+                        config_map {
+                            default_mode = "0644"
+                            name         = "redis-config"
+                            optional     = false
+                        }
+                    }
+                }
+            }
+
+            volume_claim_template {
+                metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                    labels           = {}
+                    name             = "redis-data"
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+                spec {
+                    access_modes       = [
+                        "ReadWriteOnce",
+                    ]
+                    storage_class_name = "ebs-storage-class"
+                    volume_mode        = "Filesystem"
+                    volume_name        = null
+
+                    resources {
+                        limits   = {}
+                        requests = {
+                            "storage" = "1Gi"
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+Plan: 3 to import, 0 to add, 2 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

@@ -1,0 +1,787 @@
+# Example plan output for porting more resources over from the kubernetes manifests
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+  - destroy
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+
+  # module.k8s.module.gmp.data.local_file.set_google_credentials_in_aws_file will be read during apply
+  # (depends on a resource or a module with changes pending)
+ <= data "local_file" "set_google_credentials_in_aws_file" {
+      + content              = (known after apply)
+      + content_base64       = (known after apply)
+      + content_base64sha256 = (known after apply)
+      + content_base64sha512 = (known after apply)
+      + content_md5          = (known after apply)
+      + content_sha1         = (known after apply)
+      + content_sha256       = (known after apply)
+      + content_sha512       = (known after apply)
+      + filename             = "../../../../../deploy/configs/aws/set-google-credentials-in-aws.sh"
+      + id                   = (known after apply)
+    }
+
+  # module.k8s.module.gmp.kubernetes_cluster_role_binding_v1.gmp_system_collector will be imported
+    resource "kubernetes_cluster_role_binding_v1" "gmp_system_collector" {
+        id = "gmp-system:gmp-collector"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-system:gmp-collector"
+            resource_version = "323899747"
+            uid              = "1d33cd93-c975-406d-badb-382091beffa6"
+        }
+
+        role_ref {
+            api_group = "rbac.authorization.k8s.io"
+            kind      = "ClusterRole"
+            name      = "gmp-system:gmp-collector"
+        }
+
+        subject {
+            api_group = null
+            kind      = "ServiceAccount"
+            name      = "gmp-collector"
+            namespace = "gmp-system"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_cluster_role_binding_v1.gmp_system_operator will be imported
+    resource "kubernetes_cluster_role_binding_v1" "gmp_system_operator" {
+        id = "gmp-system:operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-system:operator"
+            resource_version = "323899722"
+            uid              = "fc3bcf82-36fa-4df7-9f09-e9058117dd21"
+        }
+
+        role_ref {
+            api_group = "rbac.authorization.k8s.io"
+            kind      = "ClusterRole"
+            name      = "gmp-system:operator"
+        }
+
+        subject {
+            api_group = null
+            kind      = "ServiceAccount"
+            name      = "operator"
+            namespace = "gmp-system"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_cluster_role_v1.gmp_collector_cluster_role will be imported
+    resource "kubernetes_cluster_role_v1" "gmp_collector_cluster_role" {
+        id = "gmp-system:gmp-collector"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-system:gmp-collector"
+            resource_version = "323899689"
+            uid              = "a760a6ab-afbc-45cc-b57d-4b2908191358"
+        }
+
+        rule {
+            api_groups        = [
+                null,
+            ]
+            non_resource_urls = []
+            resource_names    = []
+            resources         = [
+                "endpoints",
+                "nodes",
+                "nodes/metrics",
+                "pods",
+                "services",
+            ]
+            verbs             = [
+                "get",
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups        = [
+                null,
+            ]
+            non_resource_urls = []
+            resource_names    = []
+            resources         = [
+                "configmaps",
+            ]
+            verbs             = [
+                "get",
+            ]
+        }
+        rule {
+            api_groups        = []
+            non_resource_urls = [
+                "/metrics",
+            ]
+            resource_names    = []
+            resources         = []
+            verbs             = [
+                "get",
+            ]
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_cluster_role_v1.gmp_system_operator will be imported
+    resource "kubernetes_cluster_role_v1" "gmp_system_operator" {
+        id = "gmp-system:operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-system:operator"
+            resource_version = "323899711"
+            uid              = "d87ee310-7088-40d9-b6ea-1c4a128a149c"
+        }
+
+        rule {
+            api_groups        = [
+                "admissionregistration.k8s.io",
+            ]
+            non_resource_urls = []
+            resource_names    = [
+                "gmp-operator.gmp-system.monitoring.googleapis.com",
+            ]
+            resources         = [
+                "validatingwebhookconfigurations",
+                "mutatingwebhookconfigurations",
+            ]
+            verbs             = [
+                "get",
+                "patch",
+                "update",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups        = [
+                "admissionregistration.k8s.io",
+            ]
+            non_resource_urls = []
+            resource_names    = [
+                "gmp-operator",
+            ]
+            resources         = [
+                "validatingwebhookconfigurations",
+                "mutatingwebhookconfigurations",
+            ]
+            verbs             = [
+                "delete",
+            ]
+        }
+        rule {
+            api_groups        = [
+                "monitoring.googleapis.com",
+            ]
+            non_resource_urls = []
+            resource_names    = []
+            resources         = [
+                "clusterpodmonitorings",
+                "clusterrules",
+                "globalrules",
+                "podmonitorings",
+                "rules",
+            ]
+            verbs             = [
+                "get",
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups        = [
+                "monitoring.googleapis.com",
+            ]
+            non_resource_urls = []
+            resource_names    = []
+            resources         = [
+                "clusterpodmonitorings/status",
+                "clusterrules/status",
+                "globalrules/status",
+                "podmonitorings/status",
+                "rules/status",
+            ]
+            verbs             = [
+                "get",
+                "patch",
+                "update",
+            ]
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_priority_class_v1.gmp_critical will be imported
+    resource "kubernetes_priority_class_v1" "gmp_critical" {
+        description       = "Used for GMP collector pods."
+        global_default    = false
+        id                = "gmp-critical"
+        preemption_policy = "PreemptLowerPriority"
+        value             = 1000000000
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 1
+            labels           = {}
+            name             = "gmp-critical"
+            resource_version = "323899672"
+            uid              = "fbdc6d73-a47a-456f-9e77-667dd653b3a1"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_role_binding_v1.gmp_public_operator will be imported
+    resource "kubernetes_role_binding_v1" "gmp_public_operator" {
+        id = "gmp-public/operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "operator"
+            namespace        = "gmp-public"
+            resource_version = "323899727"
+            uid              = "2b7cf748-3666-4ead-b688-329e533624fb"
+        }
+
+        role_ref {
+            api_group = "rbac.authorization.k8s.io"
+            kind      = "Role"
+            name      = "operator"
+        }
+
+        subject {
+            api_group = null
+            kind      = "ServiceAccount"
+            name      = "operator"
+            namespace = "gmp-system"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_role_binding_v1.gmp_system_operator will be updated in-place
+  # (imported from "gmp-system/operator")
+  ~ resource "kubernetes_role_binding_v1" "gmp_system_operator" {
+        id = "gmp-system/operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "operator"
+            namespace        = "gmp-system"
+            resource_version = "323899732"
+            uid              = "0b234d56-0dab-4d80-87a6-b536c3ec634b"
+        }
+
+        role_ref {
+            api_group = "rbac.authorization.k8s.io"
+            kind      = "Role"
+            name      = "operator"
+        }
+
+      ~ subject {
+            api_group = null
+            kind      = "ServiceAccount"
+            name      = "operator"
+          + namespace = "gmp-system"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_role_v1.operator_public_role will be imported
+    resource "kubernetes_role_v1" "operator_public_role" {
+        id = "gmp-public/operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "operator"
+            namespace        = "gmp-public"
+            resource_version = "323899706"
+            uid              = "eeac6a6d-1a94-4743-9ee5-799b76d0b72c"
+        }
+
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = []
+            resources      = [
+                "secrets",
+            ]
+            verbs          = [
+                "get",
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                "monitoring.googleapis.com",
+            ]
+            resource_names = []
+            resources      = [
+                "operatorconfigs",
+            ]
+            verbs          = [
+                "get",
+                "list",
+                "watch",
+            ]
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_role_v1.operator_system_role will be imported
+    resource "kubernetes_role_v1" "operator_system_role" {
+        id = "gmp-system/operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "operator"
+            namespace        = "gmp-system"
+            resource_version = "323899698"
+            uid              = "cff7cbf1-444f-4a2f-9b10-3d1ac7c47649"
+        }
+
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = []
+            resources      = [
+                "pods",
+            ]
+            verbs          = [
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = []
+            resources      = [
+                "secrets",
+            ]
+            verbs          = [
+                "create",
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = [
+                "alertmanager",
+                "collection",
+                "rules",
+            ]
+            resources      = [
+                "secrets",
+            ]
+            verbs          = [
+                "get",
+                "patch",
+                "update",
+            ]
+        }
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = []
+            resources      = [
+                "configmaps",
+            ]
+            verbs          = [
+                "create",
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = [
+                "collector",
+                "rule-evaluator",
+                "rules-generated",
+            ]
+            resources      = [
+                "configmaps",
+            ]
+            verbs          = [
+                "get",
+                "patch",
+                "update",
+            ]
+        }
+        rule {
+            api_groups     = [
+                "apps",
+            ]
+            resource_names = [
+                "collector",
+            ]
+            resources      = [
+                "daemonsets",
+            ]
+            verbs          = [
+                "delete",
+                "get",
+                "list",
+                "patch",
+                "update",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                "apps",
+            ]
+            resource_names = []
+            resources      = [
+                "deployments",
+            ]
+            verbs          = [
+                "list",
+                "watch",
+            ]
+        }
+        rule {
+            api_groups     = [
+                "apps",
+            ]
+            resource_names = [
+                "rule-evaluator",
+            ]
+            resources      = [
+                "deployments",
+            ]
+            verbs          = [
+                "delete",
+                "get",
+                "patch",
+                "update",
+            ]
+        }
+        rule {
+            api_groups     = [
+                null,
+            ]
+            resource_names = [
+                "alertmanager",
+            ]
+            resources      = [
+                "services",
+            ]
+            verbs          = [
+                "get",
+                "list",
+                "watch",
+            ]
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_service_account_v1.gmp_operator_service_account will be updated in-place
+  # (imported from "gmp-system/operator")
+  ~ resource "kubernetes_service_account_v1" "gmp_operator_service_account" {
+      ~ automount_service_account_token = false -> true
+        default_secret_name             = null
+        id                              = "gmp-system/operator"
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "operator"
+            namespace        = "gmp-system"
+            resource_version = "323899679"
+            uid              = "d4e51c40-f6f0-4698-b57b-17be24524d9c"
+        }
+    }
+
+  # module.k8s.module.gmp.kubernetes_service_v1.gmp_operator will be updated in-place
+  # (imported from "gmp-system/gmp-operator")
+  ~ resource "kubernetes_service_v1" "gmp_operator" {
+        id                     = "gmp-system/gmp-operator"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = []
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {}
+            name             = "gmp-operator"
+            namespace        = "gmp-system"
+            resource_version = "323899755"
+            uid              = "a5bfc54e-d601-47e7-a14c-ba5be43a3c10"
+        }
+
+        spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.113.111"
+            cluster_ips                       = [
+                "172.20.113.111",
+            ]
+            external_ips                      = []
+            external_name                     = null
+            external_traffic_policy           = null
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = null
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app.kubernetes.io/component" = "operator"
+                "app.kubernetes.io/name"      = "gmp-operator"
+                "app.kubernetes.io/part-of"   = "gmp"
+            }
+            session_affinity                  = "None"
+            type                              = "ClusterIP"
+
+            port {
+                app_protocol = null
+                name         = "legacy"
+                node_port    = 0
+                port         = 8443
+                protocol     = "TCP"
+                target_port  = "webhook"
+            }
+            port {
+                app_protocol = null
+                name         = "webhook"
+                node_port    = 0
+                port         = 443
+                protocol     = "TCP"
+                target_port  = "web"
+            }
+        }
+    }
+
+  # module.k8s.module.gmp_setup.kubernetes_job.deploy_job will be created
+  + resource "kubernetes_job" "deploy_job" {
+      + id                  = (known after apply)
+      + wait_for_completion = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = (known after apply)
+          + name             = "gmp-setup"
+          + namespace        = "deploy-jobs"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + backoff_limit   = 2
+          + completion_mode = (known after apply)
+          + completions     = 1
+          + parallelism     = 1
+
+          + template {
+              + metadata {
+                  + generation       = (known after apply)
+                  + name             = (known after apply)
+                  + resource_version = (known after apply)
+                  + uid              = (known after apply)
+                }
+              + spec {
+                  + automount_service_account_token  = true
+                  + dns_policy                       = "ClusterFirst"
+                  + enable_service_links             = true
+                  + host_ipc                         = false
+                  + host_network                     = false
+                  + host_pid                         = false
+                  + hostname                         = (known after apply)
+                  + node_name                        = (known after apply)
+                  + node_selector                    = {
+                      + "eks.amazonaws.com/nodegroup" = "deploy-job-nodegroup"
+                    }
+                  + restart_policy                   = "Never"
+                  + scheduler_name                   = (known after apply)
+                  + service_account_name             = "deploy-job-runner"
+                  + share_process_namespace          = false
+                  + termination_grace_period_seconds = 30
+
+                  + container {
+                      + args                       = [
+                          + "--noself_deploy",
+                          + "--operation=GMP_SETUP",
+                          + "--tag=latest",
+                          + "--scio_instance=aws-glean-dev-2",
+                          + "--extra_args=account_id=761376532301,skip_full_tf_check=true",
+                          + "--skip_ops_expansion",
+                        ]
+                      + image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/aws_deploy@sha256:ea9d1a0e79bd999a8a7e2f1d05192664c85f26c0fee4804dad4acf2d3c88c985"
+                      + image_pull_policy          = (known after apply)
+                      + name                       = "deploy"
+                      + stdin                      = false
+                      + stdin_once                 = false
+                      + termination_message_path   = "/dev/termination-log"
+                      + termination_message_policy = (known after apply)
+                      + tty                        = false
+
+                      + env {
+                          + name  = "AWS_ACCOUNT_ID"
+                          + value = "761376532301"
+                        }
+                      + env {
+                          + name  = "AWS_DEFAULT_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "AWS_REGION"
+                          + value = "us-west-1"
+                        }
+                      + env {
+                          + name  = "CLOUD_PLATFORM"
+                          + value = "AWS"
+                        }
+                      + env {
+                          + name  = "ENVIRONMENT"
+                          + value = "PRODUCTION"
+                        }
+                      + env {
+                          + name  = "GLEAN_SERVICE_PLATFORM"
+                          + value = "EKS"
+                        }
+                      + env {
+                          + name  = "GOOGLE_CLOUD_PROJECT"
+                          + value = "aws-connector-glean-dev-2"
+                        }
+                      + env {
+                          + name = "EKS_NODE_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAME"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "EKS_POD_NAMESPACE"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      + env {
+                          + name = "INSTANCE_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      + env {
+                          + name  = "EKS_CONTAINER_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name  = "PROFILER_SERVICE_NAME"
+                          + value = "deploy"
+                        }
+                      + env {
+                          + name = "BUILD_ID"
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+
+                      + resources {
+                          + limits   = {
+                              + "cpu"    = "1000m"
+                              + "memory" = "4Gi"
+                            }
+                          + requests = {
+                              + "cpu"    = "500m"
+                              + "memory" = "2Gi"
+                            }
+                        }
+                    }
+
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "service"
+                      + operator = "Equal"
+                      + value    = "glean-deploy-jobs"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "20m"
+          + update = "20m"
+        }
+    }
+
+Plan: 11 to import, 1 to add, 4 to change, 1 to destroy.

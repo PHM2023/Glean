@@ -1,0 +1,524 @@
+# Example plan for ADMIN_GKE run
+
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+  ~ update in-place
+
+Terraform will perform the following actions:
+
+  # module.k8s.module.admin_deployment.kubernetes_deployment_v1.deployment will be updated in-place
+  # (imported from "default/admin-deployment")
+  ~ resource "kubernetes_deployment_v1" "deployment" {
+        id               = "default/admin-deployment"
+      + wait_for_rollout = true
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 207
+            labels           = {}
+            name             = "admin-deployment"
+            namespace        = "default"
+            resource_version = "322883051"
+            uid              = "9c791890-48fa-40b8-b57a-aa4aa9cd4431"
+        }
+
+      ~ spec {
+            min_ready_seconds         = 0
+            paused                    = false
+          ~ progress_deadline_seconds = 600 -> 1500
+            replicas                  = "1"
+            revision_history_limit    = 10
+
+            selector {
+                match_labels = {
+                    "app" = "admin"
+                }
+            }
+
+          ~ strategy {
+                type = "RollingUpdate"
+
+              ~ rolling_update {
+                  ~ max_surge       = "25%" -> "100%"
+                  ~ max_unavailable = "25%" -> "0"
+                }
+            }
+
+          ~ template {
+              ~ metadata {
+                    annotations      = {}
+                    generate_name    = null
+                    generation       = 0
+                  ~ labels           = {
+                        "app"       = "admin"
+                      + "glean-app" = "True"
+                    }
+                    name             = null
+                    namespace        = null
+                    resource_version = null
+                    uid              = null
+                }
+              ~ spec {
+                    active_deadline_seconds          = 0
+                  ~ automount_service_account_token  = false -> true
+                    dns_policy                       = "ClusterFirst"
+                  ~ enable_service_links             = false -> true
+                    host_ipc                         = false
+                    host_network                     = false
+                    host_pid                         = false
+                    hostname                         = null
+                    node_name                        = null
+                  ~ node_selector                    = {
+                      - "eks.amazonaws.com/nodegroup" = "nodegroup-r6a_large" -> null
+                    }
+                    priority_class_name              = null
+                    restart_policy                   = "Always"
+                    runtime_class_name               = null
+                    scheduler_name                   = "default-scheduler"
+                    service_account_name             = "admin-console"
+                    share_process_namespace          = false
+                    subdomain                        = null
+                  ~ termination_grace_period_seconds = 30 -> 60
+
+                  + affinity {
+                      + node_affinity {
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 4
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-small-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 3
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-medium-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 2
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-large-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + preferred_during_scheduling_ignored_during_execution {
+                              + weight = 1
+
+                              + preference {
+                                  + match_expressions {
+                                      + key      = "eks.amazonaws.com/nodegroup"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-xlarge-nodegroup",
+                                        ]
+                                    }
+                                }
+                            }
+                          + required_during_scheduling_ignored_during_execution {
+                              + node_selector_term {
+                                  + match_expressions {
+                                      + key      = "use"
+                                      + operator = "In"
+                                      + values   = [
+                                          + "memory-based-workload",
+                                        ]
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                  ~ container {
+                        args                       = []
+                        command                    = []
+                      ~ image                      = "518642952506.dkr.ecr.us-east-1.amazonaws.com/admin@sha256:b6061fd3e9ff7d63bf1126e55e300ed7035922082ede8e2a737783be6f8ab322" -> "518642952506.dkr.ecr.us-east-1.amazonaws.com/admin@sha256:68393db6cd32a6366dd7569da29ce8d49b4be43d6a13cfb425d44d15e3064e62"
+                        image_pull_policy          = "Always"
+                        name                       = "admin"
+                        stdin                      = false
+                        stdin_once                 = false
+                        termination_message_path   = "/dev/termination-log"
+                        termination_message_policy = "File"
+                        tty                        = false
+                        working_dir                = null
+
+                      ~ env {
+                          ~ name  = "GOOGLE_CLOUD_PROJECT" -> "AWS_ACCOUNT_ID"
+                          ~ value = "aws-connector-glean-dev-2" -> "761376532301"
+                        }
+                      ~ env {
+                          ~ name  = "ENVIRONMENT" -> "AWS_DEFAULT_REGION"
+                          ~ value = "PRODUCTION" -> "us-west-1"
+                        }
+                      ~ env {
+                          ~ name  = "GLEAN_SERVICE_PLATFORM" -> "AWS_REGION"
+                          ~ value = "EKS" -> "us-west-1"
+                        }
+                        env {
+                            name  = "CLOUD_PLATFORM"
+                            value = "AWS"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_ACCOUNT_ID" -> "ENVIRONMENT"
+                          ~ value = "761376532301" -> "PRODUCTION"
+                        }
+                      ~ env {
+                          ~ name  = "AWS_REGION" -> "GLEAN_SERVICE_PLATFORM"
+                          ~ value = "us-west-1" -> "EKS"
+                        }
+                      ~ env {
+                          ~ name  = "GAE_SERVICE__GKE_COMPATIBILITY" -> "GOOGLE_CLOUD_PROJECT"
+                          ~ value = "default" -> "aws-connector-glean-dev-2"
+                        }
+                      ~ env {
+                          ~ name  = "PROFILER_SERVICE_NAME" -> "EKS_NODE_NAME"
+                          - value = "admin_eks" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "spec.nodeName"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "ROLLOUT_ID" -> "EKS_POD_NAME"
+                          - value = "2024-07-17 10:51:41.891611-07:00" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_CONTAINER_NAME" -> "EKS_POD_NAMESPACE"
+                          - value = "admin" -> null
+
+                          + value_from {
+                              + field_ref {
+                                  + api_version = "v1"
+                                  + field_path  = "metadata.namespace"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_NODE_NAME" -> "INSTANCE_ID"
+                            value = null
+
+                          ~ value_from {
+                              ~ field_ref {
+                                    api_version = "v1"
+                                  ~ field_path  = "spec.nodeName" -> "metadata.name"
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAME" -> "EKS_CONTAINER_NAME"
+                          + value = "admin"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "EKS_POD_NAMESPACE" -> "GAE_SERVICE__GKE_COMPATIBILITY"
+                          + value = "admin"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.namespace" -> null
+                                }
+                            }
+                        }
+                      ~ env {
+                          ~ name  = "INSTANCE_ID" -> "PROFILER_SERVICE_NAME"
+                          + value = "admin"
+
+                          - value_from {
+                              - field_ref {
+                                  - api_version = "v1" -> null
+                                  - field_path  = "metadata.name" -> null
+                                }
+                            }
+                        }
+
+                      ~ liveness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/liveness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                        port {
+                            container_port = 8080
+                            host_ip        = null
+                            host_port      = 0
+                            name           = null
+                            protocol       = "TCP"
+                        }
+
+                      ~ readiness_probe {
+                          ~ failure_threshold     = 3 -> 2
+                            initial_delay_seconds = 0
+                            period_seconds        = 30
+                            success_threshold     = 1
+                            timeout_seconds       = 10
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+
+                      ~ resources {
+                          ~ limits   = {
+                              ~ "cpu"    = "1500m" -> "1000m"
+                                "memory" = "6Gi"
+                            }
+                          ~ requests = {
+                              ~ "cpu"    = "700m" -> "500m"
+                                "memory" = "2Gi"
+                            }
+                        }
+
+                        startup_probe {
+                            failure_threshold     = 10
+                            initial_delay_seconds = 0
+                            period_seconds        = 35
+                            success_threshold     = 1
+                            timeout_seconds       = 30
+
+                            http_get {
+                                host   = null
+                                path   = "/readiness_check"
+                                port   = "8080"
+                                scheme = "HTTP"
+                            }
+                        }
+                    }
+
+                    toleration {
+                        effect             = "NoSchedule"
+                        key                = "glean-app"
+                        operator           = "Equal"
+                        toleration_seconds = null
+                        value              = "True"
+                    }
+                  + toleration {
+                      + effect   = "NoSchedule"
+                      + key      = "memory-based-workload"
+                      + operator = "Equal"
+                      + value    = "True"
+                    }
+                }
+            }
+        }
+
+      + timeouts {
+          + create = "25m"
+          + update = "25m"
+        }
+    }
+
+  # module.k8s.module.admin_deployment.kubernetes_horizontal_pod_autoscaler_v2.hpa will be created
+  + resource "kubernetes_horizontal_pod_autoscaler_v2" "hpa" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "admin-hpa"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + max_replicas                      = 2
+          + min_replicas                      = 1
+          + target_cpu_utilization_percentage = (known after apply)
+
+          + behavior {
+              + scale_down {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 900
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                }
+              + scale_up {
+                  + select_policy                = "Max"
+                  + stabilization_window_seconds = 300
+
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Percent"
+                      + value          = 100
+                    }
+                  + policy {
+                      + period_seconds = 15
+                      + type           = "Pods"
+                      + value          = 5
+                    }
+                }
+            }
+
+          + metric {
+              + type = "Resource"
+
+              + resource {
+                  + name = "cpu"
+
+                  + target {
+                      + average_utilization = 90
+                      + type                = "Utilization"
+                    }
+                }
+            }
+
+          + scale_target_ref {
+              + api_version = "apps/v1"
+              + kind        = "Deployment"
+              + name        = "admin-deployment"
+            }
+        }
+    }
+
+  # module.k8s.module.admin_deployment.kubernetes_pod_disruption_budget_v1.pdb will be created
+  + resource "kubernetes_pod_disruption_budget_v1" "pdb" {
+      + id = (known after apply)
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "admin-pdb"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + min_available = "1"
+
+          + selector {
+              + match_labels = {
+                  + "app" = "admin"
+                }
+            }
+        }
+    }
+
+  # module.k8s.module.admin_deployment.kubernetes_service_v1.service will be updated in-place
+  # (imported from "default/admin-service")
+  ~ resource "kubernetes_service_v1" "service" {
+        id                     = "default/admin-service"
+        status                 = [
+            {
+                load_balancer = [
+                    {
+                        ingress = []
+                    },
+                ]
+            },
+        ]
+      + wait_for_load_balancer = false
+
+        metadata {
+            annotations      = {}
+            generate_name    = null
+            generation       = 0
+            labels           = {
+                "app" = "admin"
+            }
+            name             = "admin-service"
+            namespace        = "default"
+            resource_version = "293241992"
+            uid              = "5a53ffc9-62bd-428e-804d-a5c3bd21d55d"
+        }
+
+      ~ spec {
+            allocate_load_balancer_node_ports = true
+            cluster_ip                        = "172.20.233.239"
+            cluster_ips                       = [
+                "172.20.233.239",
+            ]
+            external_ips                      = []
+            external_name                     = null
+          ~ external_traffic_policy           = "Local" -> "Cluster"
+            health_check_node_port            = 0
+            internal_traffic_policy           = "Cluster"
+            ip_families                       = [
+                "IPv4",
+            ]
+            ip_family_policy                  = "SingleStack"
+            load_balancer_class               = null
+            load_balancer_ip                  = null
+            load_balancer_source_ranges       = []
+            publish_not_ready_addresses       = false
+            selector                          = {
+                "app" = "admin"
+            }
+            session_affinity                  = "None"
+            type                              = "NodePort"
+
+          ~ port {
+                app_protocol = null
+              - name         = "http" -> null
+                node_port    = 32381
+                port         = 80
+                protocol     = "TCP"
+                target_port  = "8080"
+            }
+          - port {
+                app_protocol = null
+              - name         = "https" -> null
+              - node_port    = 30321 -> null
+              - port         = 443 -> null
+              - protocol     = "TCP" -> null
+              - target_port  = "8080" -> null
+            }
+        }
+    }
+
+Plan: 2 to import, 2 to add, 2 to change, 0 to destroy.
+
+Warning: Resource targeting is in effect

@@ -1,0 +1,216 @@
+data.external.proxy_configs: Reading...
+null_resource.version_check: Refreshing state... [id=1290079186660564348]
+module.eks_phase_1.aws_ebs_encryption_by_default.enable_ebs_encryption: Refreshing state... [id=terraform-20240227090910177700000001]
+module.eks_phase_1.data.aws_iam_policy_document.eks_assume_role_policy: Reading...
+module.network.aws_vpc.vpc: Refreshing state... [id=vpc-0cb335a1ada194c98]
+module.network.aws_eip.nat_gateway_eip: Refreshing state... [id=eipalloc-0468405e25286f474]
+module.kms.aws_kms_key.secret_store_key: Refreshing state... [id=bf05f139-925d-4f5b-b23a-b36daf177861]
+module.eks_phase_1.data.aws_iam_policy.cloudwatch_agent_policy: Reading...
+module.network.data.aws_availability_zones.available: Reading...
+module.eks_phase_1.data.aws_iam_policy.ebs_csi_driver_policy: Reading...
+module.eks_phase_1.aws_cloudwatch_log_group.cluster_audit_logs: Refreshing state... [id=/aws/eks/glean-cluster/cluster]
+module.eks_phase_1.data.aws_iam_policy_document.eks_assume_role_policy: Read complete after 0s [id=3552664922]
+module.eks_phase_1.aws_iam_role.eks_cluster_role: Refreshing state... [id=eksClusterRole]
+data.external.proxy_configs: Read complete after 2s [id=-]
+module.network.data.aws_availability_zones.available: Read complete after 1s [id=us-west-1]
+module.eks_phase_1.data.aws_iam_policy.ebs_csi_driver_policy: Read complete after 2s [id=arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy]
+module.eks_phase_1.data.aws_iam_policy.cloudwatch_agent_policy: Read complete after 2s [id=arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy]
+module.eks_phase_1.aws_iam_role.eks_worker_node: Refreshing state... [id=eksWorkerNode]
+module.network.aws_internet_gateway.gw: Refreshing state... [id=igw-007bfcf78e98e06ee]
+module.network.aws_subnet.public_subnet_2: Refreshing state... [id=subnet-071b15a0ec1c6e4b2]
+module.network.aws_security_group.glean_ssmmessages_vpc_endpoint_security_group: Refreshing state... [id=sg-05f663be39da114a4]
+module.network.aws_security_group.glean_ssm_vpc_endpoint_security_group: Refreshing state... [id=sg-06f360ff11a440f51]
+module.network.aws_subnet.public_subnet: Refreshing state... [id=subnet-06a1b096933823c8e]
+module.network.aws_security_group.bastion_security_group: Refreshing state... [id=sg-0bc6d1291b04fbfa5]
+module.network.module.eks_subnet.aws_subnet.private_subnet: Refreshing state... [id=subnet-038eced06a2a4af69]
+module.network.module.bastion_subnet.aws_subnet.private_subnet: Refreshing state... [id=subnet-013af8316912e3c45]
+module.network.aws_security_group.glean_ec2messages_vpc_endpoint_security_group: Refreshing state... [id=sg-043d1f5c9b5e5f4ab]
+module.proxy[0].aws_lb_target_group.glean_vpc_endpoint_service_inbound_from_proxy_nlb_target_group: Refreshing state... [id=arn:aws:elasticloadbalancing:us-west-1:761376532301:targetgroup/glean-inbound-from-proxy/026894fdbeae12a6]
+module.network.aws_route_table.public_subnet_rtb: Refreshing state... [id=rtb-07ad91e1680db7c78]
+module.network.aws_route_table_association.public_subnet_2_association: Refreshing state... [id=rtbassoc-06440fce69150d173]
+module.network.aws_nat_gateway.nat_gateway: Refreshing state... [id=nat-0977b30d87af73e80]
+module.network.aws_route_table.private_subnet_rtb: Refreshing state... [id=rtb-0229a7c50ecb767fc]
+module.network.module.bastion_subnet.aws_route_table_association.private_subnet_association: Refreshing state... [id=rtbassoc-0205e5d2d2f972b10]
+module.network.module.eks_subnet.aws_route_table_association.private_subnet_association: Refreshing state... [id=rtbassoc-03189b4efbeb276dd]
+module.network.aws_vpc_endpoint.glean_ec2messages_vpc_endpoint: Refreshing state... [id=vpce-0ab58c92feed851a8]
+module.network.aws_vpc_endpoint.glean_ssmmessages_vpc_endpoint: Refreshing state... [id=vpce-04d0641cd8a56288a]
+module.network.aws_vpc_endpoint.glean_ssm_vpc_endpoint: Refreshing state... [id=vpce-0d4f3673bff6cfaaf]
+module.eks_phase_1.aws_eks_cluster.glean_cluster: Refreshing state... [id=glean-cluster]
+module.bastion.data.aws_iam_policy.AmazonSSMManagedInstanceCore: Reading...
+module.bastion.data.aws_ami.ubuntu: Reading...
+module.bastion.data.aws_iam_policy.AmazonSSMManagedInstanceCore: Read complete after 0s [id=arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore]
+module.bastion.aws_iam_role.bastion: Refreshing state... [id=bastion]
+module.eks_phase_1.data.tls_certificate.oidc_root_ca: Reading...
+module.eks_phase_1.aws_iam_role.ebs_csi_role: Refreshing state... [id=ebsCsiRole]
+module.eks_phase_1.aws_eks_addon.vpc_cni: Refreshing state... [id=glean-cluster:vpc-cni]
+module.eks_phase_1.aws_eks_addon.kube_proxy: Refreshing state... [id=glean-cluster:kube-proxy]
+module.bastion.aws_vpc_security_group_ingress_rule.eks_bastion_ingress_allow: Refreshing state... [id=sgr-03e57ed4e9cf7ae59]
+module.bastion.data.aws_ami.ubuntu: Read complete after 0s [id=ami-05ff45cfa6792bcbc]
+module.bastion.aws_iam_instance_profile.bastion: Refreshing state... [id=bastion]
+module.eks_phase_1.module.core_add_on_node_group.aws_launch_template.node_group_launch_template: Refreshing state... [id=lt-0315fa57ae1d163ba]
+module.bastion.aws_instance.bastion: Refreshing state... [id=i-0a876d6817455d7bb]
+module.eks_phase_1.data.tls_certificate.oidc_root_ca: Read complete after 1s [id=6869123266832e3ef379611fda867372ab842837]
+module.eks_phase_1.aws_iam_openid_connect_provider.oidc_provider: Refreshing state... [id=arn:aws:iam::761376532301:oidc-provider/oidc.eks.us-west-1.amazonaws.com/id/7C292312211C210CE5E63AAFB2526A4C]
+module.eks_phase_1.module.core_add_on_node_group.aws_eks_node_group.node_group: Refreshing state... [id=glean-cluster:core-addon-node-group]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["instance"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,instance]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["testing1"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,testing1]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["Name"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,Name]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["testing2"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,testing2]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["final1"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,final1]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["testing"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,testing]
+module.eks_phase_1.module.core_add_on_node_group.aws_autoscaling_group_tag.tag["foo"]: Refreshing state... [id=eks-core-addon-node-group-0ac6372e-5981-0b1e-582f-407d836990c0,foo]
+module.eks_phase_1.aws_eks_addon.coredns: Refreshing state... [id=glean-cluster:coredns]
+module.eks_phase_1.aws_eks_addon.ebs_csi_driver: Refreshing state... [id=glean-cluster:aws-ebs-csi-driver]
+module.bastion.null_resource.ssm_readiness_check: Refreshing state... [id=757178084745387857]
+data.external.ssh_tunnel[0]: Reading...
+data.external.ssh_tunnel[0]: Read complete after 6s [id=-]
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+-/+ destroy and then create replacement
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # null_resource.version_check must be replaced
+-/+ resource "null_resource" "version_check" {
+      ~ id       = "1290079186660564348" -> (known after apply)
+      ~ triggers = { # forces replacement
+          ~ "version_tag" = "add-metrics" -> "latest"
+        }
+    }
+
+  # module.k8s.kubernetes_service_v1.dse_internal_lb_service will be created
+  + resource "kubernetes_service_v1" "dse_internal_lb_service" {
+      + id                     = (known after apply)
+      + status                 = (known after apply)
+      + wait_for_load_balancer = true
+
+      + metadata {
+          + generation       = (known after apply)
+          + labels           = {
+              + "app" = "dse"
+            }
+          + name             = "dse-internal-lb"
+          + namespace        = "default"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+
+      + spec {
+          + allocate_load_balancer_node_ports = true
+          + cluster_ip                        = (known after apply)
+          + cluster_ips                       = (known after apply)
+          + external_traffic_policy           = "Local"
+          + health_check_node_port            = (known after apply)
+          + internal_traffic_policy           = (known after apply)
+          + ip_families                       = (known after apply)
+          + ip_family_policy                  = (known after apply)
+          + publish_not_ready_addresses       = false
+          + selector                          = {
+              + "app" = "dse"
+            }
+          + session_affinity                  = "None"
+          + type                              = "LoadBalancer"
+
+          + port {
+              + node_port   = (known after apply)
+              + port        = 80
+              + protocol    = "TCP"
+              + target_port = "8080"
+            }
+        }
+    }
+
+  # module.proxy[0].data.aws_lb.dse_internal_lb will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_lb" "dse_internal_lb" {
+      + access_logs                                                  = (known after apply)
+      + arn                                                          = (known after apply)
+      + arn_suffix                                                   = (known after apply)
+      + client_keep_alive                                            = (known after apply)
+      + connection_logs                                              = (known after apply)
+      + customer_owned_ipv4_pool                                     = (known after apply)
+      + desync_mitigation_mode                                       = (known after apply)
+      + dns_name                                                     = (known after apply)
+      + dns_record_client_routing_policy                             = (known after apply)
+      + drop_invalid_header_fields                                   = (known after apply)
+      + enable_cross_zone_load_balancing                             = (known after apply)
+      + enable_deletion_protection                                   = (known after apply)
+      + enable_http2                                                 = (known after apply)
+      + enable_tls_version_and_cipher_suite_headers                  = (known after apply)
+      + enable_waf_fail_open                                         = (known after apply)
+      + enable_xff_client_port                                       = (known after apply)
+      + enforce_security_group_inbound_rules_on_private_link_traffic = (known after apply)
+      + id                                                           = (known after apply)
+      + idle_timeout                                                 = (known after apply)
+      + internal                                                     = (known after apply)
+      + ip_address_type                                              = (known after apply)
+      + load_balancer_type                                           = (known after apply)
+      + name                                                         = (known after apply)
+      + preserve_host_header                                         = (known after apply)
+      + security_groups                                              = (known after apply)
+      + subnet_mapping                                               = (known after apply)
+      + subnets                                                      = (known after apply)
+      + tags                                                         = (known after apply)
+      + vpc_id                                                       = (known after apply)
+      + xff_header_processing_mode                                   = (known after apply)
+      + zone_id                                                      = (known after apply)
+    }
+
+  # module.proxy[0].aws_lb_target_group_attachment.glean_vpc_endpoint_inbound_from_proxy_nlb_target_group_attachment will be created
+  + resource "aws_lb_target_group_attachment" "glean_vpc_endpoint_inbound_from_proxy_nlb_target_group_attachment" {
+      + id               = (known after apply)
+      + port             = 80
+      + target_group_arn = "arn:aws:elasticloadbalancing:us-west-1:761376532301:targetgroup/glean-inbound-from-proxy/026894fdbeae12a6"
+      + target_id        = (known after apply)
+    }
+
+Plan: 3 to add, 0 to change, 1 to destroy.
+
+Changes to Outputs:
+  ~ last_version_used = "add-metrics" -> "latest"
+
+Warning: Resource targeting is in effect
+
+You are creating a plan with the -target option, which means that the result
+of this plan may not represent all of the changes requested by the current
+configuration.
+
+The -target option is not for routine use, and is provided only for
+exceptional situations such as recovering from errors or mistakes, or when
+Terraform specifically suggests to use it as part of an error message.
+
+Warning: Deprecated attribute
+
+  on alb_setup.tf line 10, in resource "aws_iam_policy" "alb_policy":
+  10:   policy      = data.http.alb_policy_contents.body
+
+The attribute "body" is deprecated. Refer to the provider documentation for
+details.
+
+Warning: Deprecated Resource
+
+  with module.s3.aws_s3_bucket_object.initial_query_greenlist,
+  on ../../modules/s3/s3_buckets.tf line 155, in resource "aws_s3_bucket_object" "initial_query_greenlist":
+ 155: resource "aws_s3_bucket_object" "initial_query_greenlist" {
+
+use the aws_s3_object resource instead
+
+Warning: Argument is deprecated
+
+  with module.s3.aws_s3_bucket_object.initial_query_greenlist,
+  on ../../modules/s3/s3_buckets.tf line 157, in resource "aws_s3_bucket_object" "initial_query_greenlist":
+ 157:   key     = "whitelisted_queries.txt"
+
+Use the aws_s3_object resource instead
+
+─────────────────────────────────────────────────────────────────────────────
+
+Saved the plan to:
+/var/folders/9t/trqkvg_n0pbg7v9g3mjd8bf80000gn/T/tmpw1jq28og
+
+To perform exactly these actions, run the following command to apply:
+    terraform apply "/var/folders/9t/trqkvg_n0pbg7v9g3mjd8bf80000gn/T/tmpw1jq28og"
+Releasing state lock. This may take a few moments...
